@@ -20,7 +20,10 @@ extern crate libc;
 
 use libc::c_int;
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+mod bindings;
+// include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+
+pub use bindings::*;
 
 #[no_mangle]
 pub fn bz_internal_error(errcode: c_int) {

@@ -110,7 +110,7 @@ use std::error;
 use std::fmt;
 
 pub use optimistic_transaction_db::{OptimisticTransactionDB, OptimisticTransactionOptions};
-pub use transaction::Transaction;
+pub use transaction::{TransactionSnapshot, Transaction};
 pub use transaction_db::{TransactionDB, TransactionDBOptions, TransactionOptions};
 
 /// A simple wrapper round a string, used for errors reported from

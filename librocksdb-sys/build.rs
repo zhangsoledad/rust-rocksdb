@@ -287,11 +287,11 @@ fn main() {
     fail_on_empty_directory("zlib");
     fail_on_empty_directory("bzip2");
 
-    bindgen_rocksdb();
+    // bindgen_rocksdb();
 
-    if !try_to_find_and_link_lib("ROCKSDB") {
-        build_rocksdb();
-    }
+    // if !try_to_find_and_link_lib("ROCKSDB") {
+    build_rocksdb();
+    // }
     if cfg!(feature = "snappy") && !try_to_find_and_link_lib("SNAPPY") {
         build_snappy();
     }

@@ -6,13 +6,16 @@ use crate::{
     open_raw::{OpenRaw, OpenRawFFI},
     ops::*,
     ColumnFamily, Error, Transaction, WriteOptions,
+    Options,
 };
+
 use ffi;
 use libc::c_uchar;
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use std::ptr;
+use ffi_util::to_cpath;
 
 /// A optimistic transaction database.
 pub struct OptimisticTransactionDB {
@@ -98,6 +101,17 @@ impl GetColumnFamilys for OptimisticTransactionDB {
 impl OptimisticTransactionDB {
     pub fn path(&self) -> &Path {
         &self.path.as_path()
+    }
+
+    pub fn repair<P: AsRef<Path>>(opts: Options, path: P) -> Result<(), Error> {
+        let cpath = to_cpath(
+            path,
+            "Failed to convert path to CString when opening database.",
+        )?;
+        unsafe {
+            ffi_try!(ffi::rocksdb_repair_db(opts.inner, cpath.as_ptr(),));
+        }
+        Ok(())
     }
 }
 
