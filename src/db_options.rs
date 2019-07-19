@@ -118,7 +118,7 @@ impl ReadOptions {
         self.option_set_readahead_size = Some(v);
     }
 
-    pub(crate) fn input_or_default(
+    pub fn input_or_default(
         input: Option<&ReadOptions>,
         default_readopts: &mut Option<ReadOptions>,
     ) -> Result<*mut ffi::rocksdb_readoptions_t, Error> {

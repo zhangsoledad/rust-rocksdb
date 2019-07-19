@@ -61,7 +61,7 @@
 //!
 
 extern crate libc;
-extern crate librocksdb_sys as ffi;
+pub extern crate librocksdb_sys as ffi;
 
 #[macro_use]
 mod ffi_util;
@@ -102,7 +102,7 @@ pub use read_only_db::ReadOnlyDB;
 pub use snapshot::Snapshot;
 pub use util::TemporaryDBPath;
 pub use write_batch::WriteBatch;
-
+pub use handle::{Handle, ConstHandle};
 pub use slice_transform::SliceTransform;
 
 pub use merge_operator::MergeOperands;
@@ -121,7 +121,7 @@ pub struct Error {
 }
 
 impl Error {
-    fn new(message: String) -> Error {
+    pub fn new(message: String) -> Error {
         Error { message }
     }
 

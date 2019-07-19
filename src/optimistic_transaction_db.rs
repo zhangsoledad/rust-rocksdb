@@ -103,6 +103,10 @@ impl OptimisticTransactionDB {
         &self.path.as_path()
     }
 
+    pub fn base_db_ptr(&self) -> *mut ffi::rocksdb_t {
+        self.base_db
+    }
+
     pub fn repair<P: AsRef<Path>>(opts: Options, path: P) -> Result<(), Error> {
         let cpath = to_cpath(
             path,
@@ -148,7 +152,7 @@ impl TransactionBegin for OptimisticTransactionDB {
 }
 
 pub struct OptimisticTransactionOptions {
-    inner: *mut ffi::rocksdb_optimistictransaction_options_t,
+    pub inner: *mut ffi::rocksdb_optimistictransaction_options_t,
 }
 
 impl OptimisticTransactionOptions {
