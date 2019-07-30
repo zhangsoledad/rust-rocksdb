@@ -6,13 +6,16 @@ use crate::{
     open_raw::{OpenRaw, OpenRawFFI},
     ops::*,
     ColumnFamily, Error, Transaction, WriteOptions,
+    Options, OptimisticTransaction
 };
+
 use ffi;
 use libc::c_uchar;
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use std::ptr;
+use ffi_util::to_cpath;
 
 /// A optimistic transaction database.
 pub struct OptimisticTransactionDB {
@@ -99,6 +102,37 @@ impl OptimisticTransactionDB {
     pub fn path(&self) -> &Path {
         &self.path.as_path()
     }
+
+    pub fn base_db_ptr(&self) -> *mut ffi::rocksdb_t {
+        self.base_db
+    }
+
+    pub fn repair<P: AsRef<Path>>(opts: Options, path: P) -> Result<(), Error> {
+        let cpath = to_cpath(
+            path,
+            "Failed to convert path to CString when opening database.",
+        )?;
+        unsafe {
+            ffi_try!(ffi::rocksdb_repair_db(opts.inner, cpath.as_ptr(),));
+        }
+        Ok(())
+    }
+
+    pub fn transaction(
+        &self,
+        write_options: &WriteOptions,
+        tx_options: &OptimisticTransactionOptions,
+    ) -> OptimisticTransaction {
+        unsafe {
+            let inner = ffi::rocksdb_optimistictransaction_begin(
+                self.inner,
+                write_options.handle(),
+                tx_options.inner,
+                ptr::null_mut(),
+            );
+            OptimisticTransaction::new(inner)
+        }
+    }
 }
 
 impl Drop for OptimisticTransactionDB {
@@ -113,28 +147,28 @@ impl Drop for OptimisticTransactionDB {
     }
 }
 
-impl TransactionBegin for OptimisticTransactionDB {
-    type WriteOptions = WriteOptions;
-    type TransactionOptions = OptimisticTransactionOptions;
-    fn transaction(
-        &self,
-        write_options: &WriteOptions,
-        tx_options: &OptimisticTransactionOptions,
-    ) -> Transaction<OptimisticTransactionDB> {
-        unsafe {
-            let inner = ffi::rocksdb_optimistictransaction_begin(
-                self.inner,
-                write_options.handle(),
-                tx_options.inner,
-                ptr::null_mut(),
-            );
-            Transaction::new(inner)
-        }
-    }
-}
+// impl TransactionBegin for OptimisticTransactionDB {
+//     type WriteOptions = WriteOptions;
+//     type TransactionOptions = OptimisticTransactionOptions;
+//     fn transaction(
+//         &self,
+//         write_options: &WriteOptions,
+//         tx_options: &OptimisticTransactionOptions,
+//     ) -> Transaction<OptimisticTransactionDB> {
+//         unsafe {
+//             let inner = ffi::rocksdb_optimistictransaction_begin(
+//                 self.inner,
+//                 write_options.handle(),
+//                 tx_options.inner,
+//                 ptr::null_mut(),
+//             );
+//             Transaction::new(inner)
+//         }
+//     }
+// }
 
 pub struct OptimisticTransactionOptions {
-    inner: *mut ffi::rocksdb_optimistictransaction_options_t,
+    pub inner: *mut ffi::rocksdb_optimistictransaction_options_t,
 }
 
 impl OptimisticTransactionOptions {

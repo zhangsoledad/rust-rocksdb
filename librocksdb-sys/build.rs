@@ -90,6 +90,18 @@ fn build_rocksdb() {
         .filter(|file| *file != "util/build_version.cc")
         .collect::<Vec<&'static str>>();
 
+    if cfg!(target_arch = "x86_64") {
+        // This is needed to enable hardware CRC32C. Technically, SSE 4.2 is
+        // only available since Intel Nehalem (about 2010) and AMD Bulldozer
+        // (about 2011).
+        config.define("HAVE_PCLMUL", Some("1"));
+        config.define("HAVE_SSE42", Some("1"));
+        config.flag_if_supported("-msse2");
+        config.flag_if_supported("-msse4.1");
+        config.flag_if_supported("-msse4.2");
+        config.flag_if_supported("-mpclmul");
+    }
+
     if cfg!(target_os = "macos") {
         config.define("OS_MACOSX", Some("1"));
         config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
@@ -287,11 +299,8 @@ fn main() {
     fail_on_empty_directory("zlib");
     fail_on_empty_directory("bzip2");
 
-    bindgen_rocksdb();
+    build_rocksdb();
 
-    if !try_to_find_and_link_lib("ROCKSDB") {
-        build_rocksdb();
-    }
     if cfg!(feature = "snappy") && !try_to_find_and_link_lib("SNAPPY") {
         build_snappy();
     }
