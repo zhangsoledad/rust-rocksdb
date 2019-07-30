@@ -2,8 +2,10 @@ extern crate rocksdb;
 
 use rocksdb::{
     prelude::*, MergeOperands, OptimisticTransactionDB, OptimisticTransactionOptions, Options,
-    TemporaryDBPath, WriteOptions,
+    TemporaryDBPath, WriteOptions, OptimisticTransaction
 };
+use std::sync::Arc;
+use std::thread;
 
 #[test]
 fn test_optimistic_transactiondb() {
@@ -237,5 +239,48 @@ pub fn test_optimistic_transaction_merge() {
         assert_eq!(&*k1, b"abcdefg");
 
         trans.commit().unwrap();
+    }
+}
+
+#[derive(Clone)]
+struct TransWrapper {
+    txn: Arc<OptimisticTransaction>,
+}
+
+impl TransWrapper {
+    fn new(txn: OptimisticTransaction) -> Self {
+        Self {
+            txn: Arc::new(txn),
+        }
+    }
+
+    fn check<K>(&self, key: K, value: &str) -> bool
+    where
+        K: AsRef<[u8]>,
+    {
+        self.txn.get(key).unwrap().unwrap().to_utf8().unwrap() == value
+    }
+}
+
+#[test]
+fn sync_transaction_test() {
+    let n = TemporaryDBPath::new();
+    {
+        let db = OptimisticTransactionDB::open_default(&n).unwrap();
+        let txn = db.transaction_default();
+
+        assert!(txn.put(b"k1", b"v1").is_ok());
+        assert!(txn.put(b"k2", b"v2").is_ok());
+
+        let wrapper = TransWrapper::new(txn);
+
+        let wrapper_1 = wrapper.clone();
+        let handler_1 = thread::spawn(move || wrapper_1.check("k1", "v1"));
+
+        let wrapper_2 = wrapper.clone();
+        let handler_2 = thread::spawn(move || wrapper_2.check("k2", "v2"));
+
+        assert!(handler_1.join().unwrap());
+        assert!(handler_2.join().unwrap());
     }
 }

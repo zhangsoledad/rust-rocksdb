@@ -11,6 +11,9 @@ pub struct OptimisticTransaction {
     inner: *mut ffi::rocksdb_transaction_t,
 }
 
+unsafe impl Send for OptimisticTransaction {}
+unsafe impl Sync for OptimisticTransaction {}
+
 impl OptimisticTransaction {
     pub(crate) fn new(inner: *mut ffi::rocksdb_transaction_t) -> OptimisticTransaction {
         OptimisticTransaction {

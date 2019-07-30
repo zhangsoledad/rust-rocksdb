@@ -133,6 +133,12 @@ impl OptimisticTransactionDB {
             OptimisticTransaction::new(inner)
         }
     }
+
+    pub fn transaction_default(&self) -> OptimisticTransaction {
+        let write_options = WriteOptions::default();
+        let transaction_options = OptimisticTransactionOptions::default();
+        self.transaction(&write_options, &transaction_options)
+    }
 }
 
 impl Drop for OptimisticTransactionDB {
