@@ -350,6 +350,9 @@ pub struct OptimisticTransactionSnapshot<'a> {
     inner: *const ffi::rocksdb_snapshot_t,
 }
 
+unsafe impl<'a> Send for OptimisticTransactionSnapshot<'a> {}
+unsafe impl<'a> Sync for OptimisticTransactionSnapshot<'a> {}
+
 impl<'a> ConstHandle<ffi::rocksdb_snapshot_t> for OptimisticTransactionSnapshot<'a> {
     fn const_handle(&self) -> *const ffi::rocksdb_snapshot_t {
         self.inner
