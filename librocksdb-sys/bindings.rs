@@ -814,6 +814,14 @@ extern "C" {
     ) -> libc::c_int;
 }
 extern "C" {
+    pub fn rocksdb_property_int_cf(
+        db: *mut rocksdb_t,
+        column_family: *mut rocksdb_column_family_handle_t,
+        propname: *const libc::c_char,
+        out_val: *mut u64,
+    ) -> libc::c_int;
+}
+extern "C" {
     pub fn rocksdb_property_value_cf(
         db: *mut rocksdb_t,
         column_family: *mut rocksdb_column_family_handle_t,
@@ -893,6 +901,14 @@ extern "C" {
     pub fn rocksdb_flush(
         db: *mut rocksdb_t,
         options: *const rocksdb_flushoptions_t,
+        errptr: *mut *mut libc::c_char,
+    );
+}
+extern "C" {
+    pub fn rocksdb_flush_cf(
+        db: *mut rocksdb_t,
+        options: *const rocksdb_flushoptions_t,
+        column_family: *mut rocksdb_column_family_handle_t,
         errptr: *mut *mut libc::c_char,
     );
 }
@@ -1855,6 +1871,9 @@ extern "C" {
 }
 extern "C" {
     pub fn rocksdb_options_set_max_bytes_for_level_base(arg1: *mut rocksdb_options_t, arg2: u64);
+}
+extern "C" {
+    pub fn rocksdb_options_set_snap_refresh_nanos(arg1: *mut rocksdb_options_t, arg2: u64);
 }
 extern "C" {
     pub fn rocksdb_options_set_level_compaction_dynamic_level_bytes(
