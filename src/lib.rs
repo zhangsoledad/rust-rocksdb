@@ -64,7 +64,7 @@ extern crate libc;
 pub extern crate librocksdb_sys as ffi;
 
 #[macro_use]
-mod ffi_util;
+pub mod ffi_util;
 mod util;
 
 pub mod backup;
