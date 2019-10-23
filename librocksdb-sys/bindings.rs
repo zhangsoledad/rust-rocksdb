@@ -28,7 +28,7 @@ pub const __STDC_IEC_559_COMPLEX__: u32 = 1;
 pub const __STDC_ISO_10646__: u32 = 201706;
 pub const __GNU_LIBRARY__: u32 = 6;
 pub const __GLIBC__: u32 = 2;
-pub const __GLIBC_MINOR__: u32 = 29;
+pub const __GLIBC_MINOR__: u32 = 30;
 pub const _SYS_CDEFS_H: u32 = 1;
 pub const __glibc_c99_flexarr_available: u32 = 1;
 pub const __WORDSIZE: u32 = 64;
@@ -814,6 +814,14 @@ extern "C" {
     ) -> libc::c_int;
 }
 extern "C" {
+    pub fn rocksdb_property_int_cf(
+        db: *mut rocksdb_t,
+        column_family: *mut rocksdb_column_family_handle_t,
+        propname: *const libc::c_char,
+        out_val: *mut u64,
+    ) -> libc::c_int;
+}
+extern "C" {
     pub fn rocksdb_property_value_cf(
         db: *mut rocksdb_t,
         column_family: *mut rocksdb_column_family_handle_t,
@@ -893,6 +901,14 @@ extern "C" {
     pub fn rocksdb_flush(
         db: *mut rocksdb_t,
         options: *const rocksdb_flushoptions_t,
+        errptr: *mut *mut libc::c_char,
+    );
+}
+extern "C" {
+    pub fn rocksdb_flush_cf(
+        db: *mut rocksdb_t,
+        options: *const rocksdb_flushoptions_t,
+        column_family: *mut rocksdb_column_family_handle_t,
         errptr: *mut *mut libc::c_char,
     );
 }
@@ -1855,6 +1871,9 @@ extern "C" {
 }
 extern "C" {
     pub fn rocksdb_options_set_max_bytes_for_level_base(arg1: *mut rocksdb_options_t, arg2: u64);
+}
+extern "C" {
+    pub fn rocksdb_options_set_snap_refresh_nanos(arg1: *mut rocksdb_options_t, arg2: u64);
 }
 extern "C" {
     pub fn rocksdb_options_set_level_compaction_dynamic_level_bytes(
