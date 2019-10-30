@@ -5,17 +5,16 @@ use crate::{
     handle::{ConstHandle, Handle},
     open_raw::{OpenRaw, OpenRawFFI},
     ops::*,
-    ColumnFamily, Error, Transaction, WriteOptions,
-    Options, OptimisticTransaction
+    ColumnFamily, Error, OptimisticTransaction, Options, Transaction, WriteOptions,
 };
 
 use ffi;
+use ffi_util::to_cpath;
 use libc::c_uchar;
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use std::ptr;
-use ffi_util::to_cpath;
 
 /// A optimistic transaction database.
 pub struct OptimisticTransactionDB {

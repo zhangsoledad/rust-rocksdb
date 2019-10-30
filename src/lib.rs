@@ -81,8 +81,8 @@ mod handle;
 pub mod merge_operator;
 mod open_raw;
 pub mod ops;
-mod optimistic_transaction_db;
 mod optimistic_transaction;
+mod optimistic_transaction_db;
 mod read_only_db;
 mod slice_transform;
 mod snapshot;
@@ -99,20 +99,20 @@ pub use db_iterator::{DBIterator, DBRawIterator, Direction, IteratorMode};
 pub use db_options::{DBCompactionStyle, DBCompressionType, DBRecoveryMode, ReadOptions};
 pub use db_pinnable_slice::DBPinnableSlice;
 pub use db_vector::DBVector;
+pub use handle::{ConstHandle, Handle};
 pub use read_only_db::ReadOnlyDB;
+pub use slice_transform::SliceTransform;
 pub use snapshot::Snapshot;
 pub use util::TemporaryDBPath;
 pub use write_batch::WriteBatch;
-pub use handle::{Handle, ConstHandle};
-pub use slice_transform::SliceTransform;
 
 pub use merge_operator::MergeOperands;
 use std::error;
 use std::fmt;
 
-pub use optimistic_transaction_db::{OptimisticTransactionDB, OptimisticTransactionOptions};
 pub use optimistic_transaction::{OptimisticTransaction, OptimisticTransactionSnapshot};
-pub use transaction::{TransactionSnapshot, Transaction};
+pub use optimistic_transaction_db::{OptimisticTransactionDB, OptimisticTransactionOptions};
+pub use transaction::{Transaction, TransactionSnapshot};
 pub use transaction_db::{TransactionDB, TransactionDBOptions, TransactionOptions};
 
 /// A simple wrapper round a string, used for errors reported from
