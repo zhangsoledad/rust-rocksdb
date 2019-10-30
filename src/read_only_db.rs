@@ -16,20 +16,23 @@
 use ffi;
 
 use crate::{
+    db_iterator::DBRawIterator,
+    db_options::ReadOptions,
     handle::Handle,
     open_raw::{OpenRaw, OpenRawFFI},
-    ops, Error,
+    ops, ColumnFamily, Error,
 };
 
 use libc::c_uchar;
 use std::collections::BTreeMap;
 use std::fmt;
+use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
 
 pub struct ReadOnlyDB {
     pub(crate) inner: *mut ffi::rocksdb_t,
-    cfs: Arc<RwLock<BTreeMap<String, *mut ffi::rocksdb_column_family_handle_t>>>,
+    cfs: BTreeMap<String, ColumnFamily>,
     path: PathBuf,
 }
 
@@ -46,7 +49,7 @@ pub struct ReadOnlyOpenDescriptor {
 impl Default for ReadOnlyOpenDescriptor {
     fn default() -> Self {
         ReadOnlyOpenDescriptor {
-            error_if_log_file_exists: true,
+            error_if_log_file_exists: false,
         }
     }
 }
@@ -92,11 +95,13 @@ impl OpenRaw for ReadOnlyDB {
     where
         I: IntoIterator<Item = (String, *mut ffi::rocksdb_column_family_handle_t)>,
     {
-        let cfs: BTreeMap<_, _> = column_families.into_iter().collect();
-
+        let cfs: BTreeMap<_, _> = column_families
+            .into_iter()
+            .map(|(k, h)| (k, ColumnFamily::new(h)))
+            .collect();
         Ok(ReadOnlyDB {
             inner: pointer,
-            cfs: Arc::new(RwLock::new(cfs)),
+            cfs,
             path,
         })
     }
@@ -108,6 +113,45 @@ impl Handle<ffi::rocksdb_t> for ReadOnlyDB {
     }
 }
 
+impl ops::Iterate for ReadOnlyDB {
+    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+        unsafe {
+            DBRawIterator {
+                inner: ffi::rocksdb_create_iterator(self.inner, readopts.handle()),
+                db: PhantomData,
+            }
+        }
+    }
+}
+
+impl ops::IterateCF for ReadOnlyDB {
+    fn get_raw_iter_cf(
+        &self,
+        cf_handle: &ColumnFamily,
+        readopts: &ReadOptions,
+    ) -> Result<DBRawIterator, Error> {
+        unsafe {
+            Ok(DBRawIterator {
+                inner: ffi::rocksdb_create_iterator_cf(
+                    self.inner,
+                    readopts.handle(),
+                    cf_handle.inner,
+                ),
+                db: PhantomData,
+            })
+        }
+    }
+}
+
+impl ops::GetColumnFamilys for ReadOnlyDB {
+    fn get_cfs(&self) -> &BTreeMap<String, ColumnFamily> {
+        &self.cfs
+    }
+    fn get_mut_cfs(&mut self) -> &mut BTreeMap<String, ColumnFamily> {
+        &mut self.cfs
+    }
+}
+
 impl ops::Read for ReadOnlyDB {}
 
 unsafe impl Send for ReadOnlyDB {}
@@ -116,10 +160,8 @@ unsafe impl Sync for ReadOnlyDB {}
 impl Drop for ReadOnlyDB {
     fn drop(&mut self) {
         unsafe {
-            if let Ok(cfs) = self.cfs.read() {
-                for cf in cfs.values() {
-                    ffi::rocksdb_column_family_handle_destroy(*cf);
-                }
+            for cf in self.cfs.values() {
+                ffi::rocksdb_column_family_handle_destroy(cf.inner);
             }
             ffi::rocksdb_close(self.inner);
         }

@@ -1,8 +1,8 @@
 extern crate rocksdb;
 
 use rocksdb::{
-    prelude::*, MergeOperands, OptimisticTransactionDB, OptimisticTransactionOptions, Options,
-    TemporaryDBPath, WriteOptions, OptimisticTransaction
+    prelude::*, MergeOperands, OptimisticTransaction, OptimisticTransactionDB,
+    OptimisticTransactionOptions, Options, TemporaryDBPath, WriteOptions,
 };
 use std::sync::Arc;
 use std::thread;
@@ -249,9 +249,7 @@ struct TransWrapper {
 
 impl TransWrapper {
     fn new(txn: OptimisticTransaction) -> Self {
-        Self {
-            txn: Arc::new(txn),
-        }
+        Self { txn: Arc::new(txn) }
     }
 
     fn check<K>(&self, key: K, value: &str) -> bool
