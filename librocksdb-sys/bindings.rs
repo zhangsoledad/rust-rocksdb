@@ -476,6 +476,14 @@ extern "C" {
     ) -> *mut rocksdb_t;
 }
 extern "C" {
+    pub fn rocksdb_open_as_secondary(
+        options: *const rocksdb_options_t,
+        name: *const libc::c_char,
+        secondary_path: *const libc::c_char,
+        errptr: *mut *mut libc::c_char,
+    ) -> *mut rocksdb_t;
+}
+extern "C" {
     pub fn rocksdb_backup_engine_open(
         options: *const rocksdb_options_t,
         path: *const libc::c_char,
@@ -609,6 +617,18 @@ extern "C" {
         column_family_options: *mut *const rocksdb_options_t,
         column_family_handles: *mut *mut rocksdb_column_family_handle_t,
         error_if_log_file_exist: libc::c_uchar,
+        errptr: *mut *mut libc::c_char,
+    ) -> *mut rocksdb_t;
+}
+extern "C" {
+    pub fn rocksdb_open_as_secondary_column_families(
+        options: *const rocksdb_options_t,
+        name: *const libc::c_char,
+        secondary_path: *const libc::c_char,
+        num_column_families: libc::c_int,
+        column_family_names: *mut *const libc::c_char,
+        column_family_options: *mut *const rocksdb_options_t,
+        colummn_family_handles: *mut *mut rocksdb_column_family_handle_t,
         errptr: *mut *mut libc::c_char,
     ) -> *mut rocksdb_t;
 }
@@ -1931,6 +1951,9 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn rocksdb_options_set_unordered_write(arg1: *mut rocksdb_options_t, arg2: libc::c_uchar);
+}
+extern "C" {
     pub fn rocksdb_options_set_max_subcompactions(arg1: *mut rocksdb_options_t, arg2: u32);
 }
 extern "C" {
@@ -2716,6 +2739,18 @@ extern "C" {
     pub fn rocksdb_env_join_all_threads(env: *mut rocksdb_env_t);
 }
 extern "C" {
+    pub fn rocksdb_env_lower_thread_pool_io_priority(env: *mut rocksdb_env_t);
+}
+extern "C" {
+    pub fn rocksdb_env_lower_high_priority_thread_pool_io_priority(env: *mut rocksdb_env_t);
+}
+extern "C" {
+    pub fn rocksdb_env_lower_thread_pool_cpu_priority(env: *mut rocksdb_env_t);
+}
+extern "C" {
+    pub fn rocksdb_env_lower_high_priority_thread_pool_cpu_priority(env: *mut rocksdb_env_t);
+}
+extern "C" {
     pub fn rocksdb_env_destroy(arg1: *mut rocksdb_env_t);
 }
 extern "C" {
@@ -2851,6 +2886,9 @@ extern "C" {
         opt: *const rocksdb_ingestexternalfileoptions_t,
         errptr: *mut *mut libc::c_char,
     );
+}
+extern "C" {
+    pub fn rocksdb_try_catch_up_with_primary(db: *mut rocksdb_t, errptr: *mut *mut libc::c_char);
 }
 extern "C" {
     pub fn rocksdb_slicetransform_create(
