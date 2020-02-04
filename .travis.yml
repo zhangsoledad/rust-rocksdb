@@ -1,15 +1,13 @@
 language: rust
-dist: trusty
-sudo: true
+dist: xenial
+sudo: false
 
 os:
 - linux
 - osx
-- windows
 
 rust:
   - stable
-  - beta
 
 addons:
   apt:
@@ -17,10 +15,12 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty
     packages:
-      - g++-5
-      - llvm-3.9-dev
-      - libclang-3.9-dev
-      - clang-3.9
+      - g++
+      - llvm-dev
+      - libclang-dev
+      - clang
+
+cache: cargo
 
 install:
   - rustup component add rustfmt
@@ -30,8 +30,3 @@ script:
   - cargo fmt --all -- --check
   - cargo test --manifest-path=librocksdb-sys/Cargo.toml
   - cargo test
-
-cache: cargo
-before_cache:
-  - rm -rfv target/
-  
