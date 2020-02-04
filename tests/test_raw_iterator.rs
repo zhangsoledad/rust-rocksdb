@@ -149,3 +149,18 @@ pub fn test_seek_for_prev() {
         assert_eq!(iter.value(), Some(b"v2".as_ref()));
     }
 }
+
+#[test]
+fn iterator_test_past_end() {
+    use rocksdb::IteratorMode;
+
+    let n = TemporaryDBPath::new();
+    {
+        let db = DB::open_default(&n).unwrap();
+        db.put(b"k1", b"v1111").unwrap();
+        let mut iter = db.iterator(IteratorMode::Start);
+        assert!(iter.next().is_some());
+        assert!(iter.next().is_none());
+        assert!(iter.next().is_none());
+    }
+}
