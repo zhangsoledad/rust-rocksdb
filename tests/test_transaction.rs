@@ -27,14 +27,14 @@ pub fn test_transaction() {
         iter.seek_to_first();
 
         assert_eq!(iter.valid(), true);
-        assert_eq!(iter.key(), Some(b"k1".to_vec()));
-        assert_eq!(iter.value(), Some(b"v1".to_vec()));
+        assert_eq!(iter.key(), Some(b"k1".as_ref()));
+        assert_eq!(iter.value(), Some(b"v1".as_ref()));
 
         iter.next();
 
         assert_eq!(iter.valid(), true);
-        assert_eq!(iter.key(), Some(b"k2".to_vec()));
-        assert_eq!(iter.value(), Some(b"v2".to_vec()));
+        assert_eq!(iter.key(), Some(b"k2".as_ref()));
+        assert_eq!(iter.value(), Some(b"v2".as_ref()));
 
         iter.next(); // k3
         iter.next(); // k4
