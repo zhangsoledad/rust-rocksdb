@@ -396,6 +396,9 @@ impl<'a> Iterator for DBIterator<'a> {
     type Item = KVBytes;
 
     fn next(&mut self) -> Option<KVBytes> {
+        if !self.raw.valid() {
+            return None;
+        }
         // Initial call to next() after seeking should not move the iterator
         // or the first item will not be returned
         if !self.just_seeked {
