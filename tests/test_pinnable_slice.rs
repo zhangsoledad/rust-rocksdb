@@ -1,4 +1,4 @@
-extern crate rocksdb;
+extern crate ckb_rocksdb as rocksdb;
 
 use rocksdb::{prelude::*, TemporaryDBPath};
 

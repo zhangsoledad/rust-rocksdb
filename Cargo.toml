@@ -1,16 +1,17 @@
 [package]
-name = "rocksdb"
+name = "ckb-rocksdb"
 description = "Rust wrapper for Facebook's RocksDB embeddable database"
 version = "0.12.2"
-authors = ["Tyler Neely <t@jujit.su>", "David Greenberg <dsg123456789@gmail.com>"]
+authors = ["Tyler Neely <t@jujit.su>", "David Greenberg <dsg123456789@gmail.com>", "Nervos Core Dev <dev@nervos.org>"]
 license = "Apache-2.0"
 keywords = ["database", "embedded", "LSM-tree", "persistence"]
-homepage = "https://github.com/spacejam/rust-rocksdb"
+homepage = "https://github.com/nervosnetwork/rust-rocksdb"
 exclude = [
     ".gitignore",
-    ".travis.yml",
+    "*.yml",
     "deploy.sh",
     "test/**/*",
+    "*.md"
 ]
 
 [features]

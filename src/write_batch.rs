@@ -24,8 +24,8 @@ use libc::{c_char, size_t};
 /// Making an atomic commit of several writes:
 ///
 /// ```
-/// use rocksdb::{prelude::*, WriteBatch};
-/// # use rocksdb::TemporaryDBPath;
+/// use ckb_rocksdb::{prelude::*, WriteBatch};
+/// # use ckb_rocksdb::TemporaryDBPath;
 ///
 /// let path = "_path_for_rocksdb_storage1";
 /// # let path = TemporaryDBPath::new();

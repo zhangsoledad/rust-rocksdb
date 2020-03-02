@@ -18,8 +18,8 @@
 //! # Examples
 //!
 //! ```
-//! use rocksdb::prelude::*;
-//! # use rocksdb::TemporaryDBPath;
+//! use ckb_rocksdb::prelude::*;
+//! # use ckb_rocksdb::TemporaryDBPath;
 //! // NB: db is automatically closed at end of lifetime
 //!
 //! let path = "_path_for_rocksdb_storage";
@@ -41,8 +41,8 @@
 //! Opening a database and a single column family with custom options:
 //!
 //! ```
-//! use rocksdb::{prelude::*, ColumnFamilyDescriptor};
-//! # use rocksdb::TemporaryDBPath;
+//! use ckb_rocksdb::{prelude::*, ColumnFamilyDescriptor};
+//! # use ckb_rocksdb::TemporaryDBPath;
 //!
 //! let path = "_path_for_rocksdb_storage_with_cfs";
 //! # let path = TemporaryDBPath::new();
@@ -213,8 +213,8 @@ pub struct PlainTableFactoryOptions {
 /// # Examples
 ///
 /// ```
-/// use rocksdb::{Options, DB, prelude::*};
-/// use rocksdb::DBCompactionStyle;
+/// use ckb_rocksdb::{Options, DB, prelude::*};
+/// use ckb_rocksdb::DBCompactionStyle;
 ///
 /// fn badly_tuned_for_somebody_elses_disk() -> DB {
 ///    let path = "path/for/rocksdb/storageX";
@@ -250,7 +250,7 @@ pub struct Options {
 /// Manually flushing the memtable:
 ///
 /// ```
-/// use rocksdb::{DB, Options, FlushOptions, prelude::*};
+/// use ckb_rocksdb::{DB, Options, FlushOptions, prelude::*};
 ///
 /// let path = "_path_for_rocksdb_storageY";
 /// {
@@ -276,7 +276,7 @@ pub struct FlushOptions {
 /// Making an unsafe write of a batch:
 ///
 /// ```
-/// use rocksdb::{DB, Options, WriteBatch, WriteOptions, prelude::*};
+/// use ckb_rocksdb::{DB, Options, WriteBatch, WriteOptions, prelude::*};
 ///
 /// let path = "_path_for_rocksdb_storageZ";
 /// {

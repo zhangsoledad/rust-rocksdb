@@ -90,7 +90,7 @@ impl BackupEngine {
     /// # Example
     ///
     /// ```ignore
-    /// use rocksdb::backup::{BackupEngine, BackupEngineOptions};
+    /// use ckb_rocksdb::backup::{BackupEngine, BackupEngineOptions};
     /// let backup_opts = BackupEngineOptions::default();
     /// let mut backup_engine = BackupEngine::open(&backup_opts, &backup_path).unwrap();
     /// let mut restore_option = rocksdb::backup::RestoreOptions::default();
