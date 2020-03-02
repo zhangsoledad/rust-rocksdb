@@ -16,8 +16,8 @@
 //! rustic merge operator
 //!
 //! ```
-//! use rocksdb::{prelude::*, MergeOperands};
-//! # use rocksdb::TemporaryDBPath;
+//! use ckb_rocksdb::{prelude::*, MergeOperands};
+//! # use ckb_rocksdb::TemporaryDBPath;
 //!
 //! fn concat_merge(new_key: &[u8],
 //!                 existing_val: Option<&[u8]>,

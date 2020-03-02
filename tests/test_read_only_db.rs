@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+extern crate ckb_rocksdb as rocksdb;
 extern crate libc;
-extern crate rocksdb;
 
 use rocksdb::{prelude::*, ReadOnlyDB, TemporaryDBPath};
 

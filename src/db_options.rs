@@ -106,7 +106,7 @@ impl ReadOptions {
     /// Default: 0
     ///
     /// ```
-    /// use rocksdb::{ReadOptions};
+    /// use ckb_rocksdb::{ReadOptions};
     ///
     /// let mut opts = ReadOptions::default();
     /// opts.set_readahead_size(4_194_304); // 4mb
@@ -294,7 +294,7 @@ impl BlockBasedOptions {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::{BlockBasedOptions, BlockBasedIndexType, Options};
+    /// use ckb_rocksdb::{BlockBasedOptions, BlockBasedIndexType, Options};
     ///
     /// let mut opts = Options::default();
     /// let mut block_opts = BlockBasedOptions::default();
@@ -328,7 +328,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.increase_parallelism(3);
@@ -355,7 +355,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.create_if_missing(true);
@@ -374,7 +374,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.create_missing_column_families(true);
@@ -397,7 +397,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::{Options, DBCompressionType};
+    /// use ckb_rocksdb::{Options, DBCompressionType};
     ///
     /// let mut opts = Options::default();
     /// opts.set_compression_type(DBCompressionType::Snappy);
@@ -419,7 +419,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::{Options, DBCompressionType};
+    /// use ckb_rocksdb::{Options, DBCompressionType};
     ///
     /// let mut opts = Options::default();
     /// opts.set_compression_per_level(&[
@@ -573,7 +573,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_max_open_files(10);
@@ -594,7 +594,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_use_fsync(true);
@@ -620,7 +620,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_bytes_per_sync(1024 * 1024);
@@ -643,7 +643,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_allow_concurrent_memtable_write(false);
@@ -667,7 +667,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_use_direct_reads(true);
@@ -691,7 +691,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_use_direct_io_for_flush_and_compaction(true);
@@ -728,7 +728,7 @@ impl Options {
     ///
     /// ```
     /// #[allow(deprecated)]
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_allow_os_buffer(false);
@@ -749,7 +749,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_table_cache_num_shard_bits(4);
@@ -773,7 +773,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_min_write_buffer_number(2);
@@ -812,7 +812,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_min_write_buffer_number(4);
@@ -843,7 +843,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_write_buffer_size(128 * 1024 * 1024);
@@ -870,7 +870,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_max_bytes_for_level_base(512 * 1024 * 1024);
@@ -886,7 +886,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_max_bytes_for_level_multiplier(4.0);
@@ -904,7 +904,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_max_manifest_file_size(20 * 1024 * 1024);
@@ -931,7 +931,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_target_file_size_base(128 * 1024 * 1024);
@@ -955,7 +955,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_min_write_buffer_number_to_merge(2);
@@ -976,7 +976,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_level_zero_file_num_compaction_trigger(8);
@@ -998,7 +998,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_level_zero_slowdown_writes_trigger(10);
@@ -1018,7 +1018,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_level_zero_stop_writes_trigger(48);
@@ -1036,7 +1036,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::{Options, DBCompactionStyle};
+    /// use ckb_rocksdb::{Options, DBCompactionStyle};
     ///
     /// let mut opts = Options::default();
     /// opts.set_compaction_style(DBCompactionStyle::Universal);
@@ -1063,7 +1063,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_max_background_compactions(2);
@@ -1094,7 +1094,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_max_background_flushes(2);
@@ -1115,7 +1115,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_disable_auto_compactions(true);
@@ -1131,7 +1131,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::{Options, MemtableFactory};
+    /// use ckb_rocksdb::{Options, MemtableFactory};
     /// let mut opts = Options::default();
     /// let factory = MemtableFactory::HashSkipList {
     ///     bucket_count: 1_000_000,
@@ -1174,7 +1174,7 @@ impl Options {
     /// See https://github.com/facebook/rocksdb/wiki/PlainTable-Format.
     ///
     /// ```
-    /// use rocksdb::{Options, PlainTableFactoryOptions};
+    /// use ckb_rocksdb::{Options, PlainTableFactoryOptions};
     ///
     /// let mut opts = Options::default();
     /// let factory_opts = PlainTableFactoryOptions {
@@ -1205,7 +1205,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_report_bg_io_stats(true);
@@ -1223,7 +1223,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::{Options, DBRecoveryMode};
+    /// use ckb_rocksdb::{Options, DBRecoveryMode};
     ///
     /// let mut opts = Options::default();
     /// opts.set_wal_recovery_mode(DBRecoveryMode::AbsoluteConsistency);
@@ -1261,7 +1261,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_stats_dump_period_sec(300);
@@ -1297,7 +1297,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::{Options, SliceTransform};
+    /// use ckb_rocksdb::{Options, SliceTransform};
     ///
     /// let mut opts = Options::default();
     /// let transform = SliceTransform::create_fixed_prefix(10);
@@ -1318,7 +1318,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut opts = Options::default();
     /// opts.set_wal_dir("/path/to/dir");
@@ -1355,7 +1355,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut options = Options::default();
     /// options.set_allow_mmap_writes(true);
@@ -1373,7 +1373,7 @@ impl Options {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::Options;
+    /// use ckb_rocksdb::Options;
     ///
     /// let mut options = Options::default();
     /// options.set_allow_mmap_reads(true);
@@ -1409,7 +1409,7 @@ impl FlushOptions {
     /// # Example
     ///
     /// ```
-    /// use rocksdb::FlushOptions;
+    /// use ckb_rocksdb::FlushOptions;
     ///
     /// let mut options = FlushOptions::default();
     /// options.set_wait(false);

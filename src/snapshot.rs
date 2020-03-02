@@ -20,8 +20,8 @@ use crate::{
 /// A consistent view of the database at the point of creation.
 ///
 /// ```
-/// use rocksdb::{prelude::*, IteratorMode};
-/// # use rocksdb::TemporaryDBPath;
+/// use ckb_rocksdb::{prelude::*, IteratorMode};
+/// # use ckb_rocksdb::TemporaryDBPath;
 ///
 /// let path = "_path_for_rocksdb_storage3";
 /// # let path = TemporaryDBPath::new();

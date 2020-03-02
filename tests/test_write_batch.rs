@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-extern crate rocksdb;
+extern crate ckb_rocksdb as rocksdb;
 
 use rocksdb::WriteBatch;
 
