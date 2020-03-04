@@ -25,8 +25,8 @@
 
 #[macro_use]
 extern crate const_cstr;
+extern crate ckb_librocksdb_sys as ffi;
 extern crate libc;
-extern crate librocksdb_sys as ffi;
 extern crate uuid;
 
 use ffi::*;
