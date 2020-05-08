@@ -48,7 +48,7 @@ fn build_rocksdb() {
     let mut config = cc::Build::new();
     config.include("rocksdb/include/");
     config.include("rocksdb/");
-    config.include("rocksdb/third-party/gtest-1.7.0/fused-src/");
+    config.include("rocksdb/third-party/gtest-1.8.1/fused-src/");
 
     if cfg!(feature = "snappy") {
         config.define("SNAPPY", Some("1"));
@@ -138,7 +138,8 @@ fn build_rocksdb() {
             .iter()
             .cloned()
             .filter(|file| match *file {
-                "port/port_posix.cc" | "env/env_posix.cc" | "env/io_posix.cc" => false,
+                "port/port_posix.cc" | "env/env_posix.cc" | "env/fs_posix.cc"
+                | "env/io_posix.cc" => false,
                 _ => true,
             })
             .collect::<Vec<&'static str>>();
