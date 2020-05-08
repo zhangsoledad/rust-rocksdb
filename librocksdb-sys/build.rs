@@ -108,24 +108,30 @@ fn build_rocksdb() {
         config.define("OS_MACOSX", Some("1"));
         config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
         config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
-    }
-    if target.contains("linux") {
+    } else if target.contains("android") {
+        config.define("OS_ANDROID", Some("1"));
+        config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
+        config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
+    } else if target.contains("linux") {
         config.define("OS_LINUX", Some("1"));
         config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
         config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
-        // COMMON_FLAGS="$COMMON_FLAGS -fno-builtin-memcmp"
-    }
-    if target.contains("freebsd") {
+    } else if target.contains("freebsd") {
         config.define("OS_FREEBSD", Some("1"));
         config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
         config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
-    }
-
-    if target.contains("windows") {
+    } else if target.contains("windows") {
         link("rpcrt4", false);
         link("shlwapi", false);
         config.define("OS_WIN", Some("1"));
         config.define("ROCKSDB_WINDOWS_UTF8_FILENAMES", Some("1"));
+        if &target == "x86_64-pc-windows-gnu" {
+            // Tell MinGW to create localtime_r wrapper of localtime_s function.
+            config.define("_POSIX_C_SOURCE", None);
+            // Tell MinGW to use at least Windows Vista headers instead of the ones of Windows XP.
+            // (This is minimum supported version of rocksdb)
+            config.define("_WIN32_WINNT", Some("0x0600"));
+        }
 
         // Remove POSIX-specific sources
         lib_sources = lib_sources
@@ -168,6 +174,7 @@ fn build_rocksdb() {
 
 fn build_snappy() {
     let target = env::var("TARGET").unwrap();
+    let endianness = env::var("CARGO_CFG_TARGET_ENDIAN").unwrap();
 
     let mut config = cc::Build::new();
     config.include("snappy/");
@@ -179,6 +186,10 @@ fn build_snappy() {
         config.flag("-EHsc");
     } else {
         config.flag("-std=c++11");
+    }
+
+    if endianness == "big" {
+        config.define("SNAPPY_IS_BIG_ENDIAN", Some("1"));
     }
 
     config.file("snappy/snappy.cc");
