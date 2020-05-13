@@ -48,7 +48,7 @@ fn build_rocksdb() {
     let mut config = cc::Build::new();
     config.include("rocksdb/include/");
     config.include("rocksdb/");
-    config.include("rocksdb/third-party/gtest-1.7.0/fused-src/");
+    config.include("rocksdb/third-party/gtest-1.8.1/fused-src/");
 
     if cfg!(feature = "snappy") {
         config.define("SNAPPY", Some("1"));
@@ -108,31 +108,38 @@ fn build_rocksdb() {
         config.define("OS_MACOSX", Some("1"));
         config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
         config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
-    }
-    if target.contains("linux") {
+    } else if target.contains("android") {
+        config.define("OS_ANDROID", Some("1"));
+        config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
+        config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
+    } else if target.contains("linux") {
         config.define("OS_LINUX", Some("1"));
         config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
         config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
-        // COMMON_FLAGS="$COMMON_FLAGS -fno-builtin-memcmp"
-    }
-    if target.contains("freebsd") {
+    } else if target.contains("freebsd") {
         config.define("OS_FREEBSD", Some("1"));
         config.define("ROCKSDB_PLATFORM_POSIX", Some("1"));
         config.define("ROCKSDB_LIB_IO_POSIX", Some("1"));
-    }
-
-    if target.contains("windows") {
+    } else if target.contains("windows") {
         link("rpcrt4", false);
         link("shlwapi", false);
         config.define("OS_WIN", Some("1"));
         config.define("ROCKSDB_WINDOWS_UTF8_FILENAMES", Some("1"));
+        if &target == "x86_64-pc-windows-gnu" {
+            // Tell MinGW to create localtime_r wrapper of localtime_s function.
+            config.define("_POSIX_C_SOURCE", None);
+            // Tell MinGW to use at least Windows Vista headers instead of the ones of Windows XP.
+            // (This is minimum supported version of rocksdb)
+            config.define("_WIN32_WINNT", Some("0x0600"));
+        }
 
         // Remove POSIX-specific sources
         lib_sources = lib_sources
             .iter()
             .cloned()
             .filter(|file| match *file {
-                "port/port_posix.cc" | "env/env_posix.cc" | "env/io_posix.cc" => false,
+                "port/port_posix.cc" | "env/env_posix.cc" | "env/fs_posix.cc"
+                | "env/io_posix.cc" => false,
                 _ => true,
             })
             .collect::<Vec<&'static str>>();
@@ -168,6 +175,7 @@ fn build_rocksdb() {
 
 fn build_snappy() {
     let target = env::var("TARGET").unwrap();
+    let endianness = env::var("CARGO_CFG_TARGET_ENDIAN").unwrap();
 
     let mut config = cc::Build::new();
     config.include("snappy/");
@@ -179,6 +187,10 @@ fn build_snappy() {
         config.flag("-EHsc");
     } else {
         config.flag("-std=c++11");
+    }
+
+    if endianness == "big" {
+        config.define("SNAPPY_IS_BIG_ENDIAN", Some("1"));
     }
 
     config.file("snappy/snappy.cc");
@@ -291,34 +303,32 @@ fn try_to_find_and_link_lib(lib_name: &str) -> bool {
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=rocksdb/");
-    println!("cargo:rerun-if-changed=snappy/");
-    println!("cargo:rerun-if-changed=lz4/");
-    println!("cargo:rerun-if-changed=zstd/");
-    println!("cargo:rerun-if-changed=zlib/");
-    println!("cargo:rerun-if-changed=bzip2/");
-
     fail_on_empty_directory("rocksdb");
-    fail_on_empty_directory("snappy");
-    fail_on_empty_directory("lz4");
-    fail_on_empty_directory("zstd");
-    fail_on_empty_directory("zlib");
-    fail_on_empty_directory("bzip2");
-
     build_rocksdb();
 
     if cfg!(feature = "snappy") && !try_to_find_and_link_lib("SNAPPY") {
+        println!("cargo:rerun-if-changed=snappy/");
+        fail_on_empty_directory("snappy");
         build_snappy();
     }
     if cfg!(feature = "lz4") && !try_to_find_and_link_lib("LZ4") {
+        println!("cargo:rerun-if-changed=lz4/");
+        fail_on_empty_directory("lz4");
         build_lz4();
     }
     if cfg!(feature = "zstd") && !try_to_find_and_link_lib("ZSTD") {
+        println!("cargo:rerun-if-changed=zstd/");
+        fail_on_empty_directory("zstd");
         build_zstd();
     }
-    if cfg!(feature = "zlib") && !try_to_find_and_link_lib("ZLIB") {
+    if cfg!(feature = "zlib") && !try_to_find_and_link_lib("Z") {
+        println!("cargo:rerun-if-changed=zlib/");
+        fail_on_empty_directory("zlib");
         build_zlib();
     }
-    if cfg!(feature = "bzip2") && !try_to_find_and_link_lib("BZIP2") {
+    if cfg!(feature = "bzip2") && !try_to_find_and_link_lib("BZ2") {
+        println!("cargo:rerun-if-changed=bzip2/");
+        fail_on_empty_directory("bzip2");
         build_bzip2();
     }
 }

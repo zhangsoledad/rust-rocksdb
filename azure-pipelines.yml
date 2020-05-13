@@ -16,8 +16,17 @@ jobs:
           eq(variables['Build.SourceBranch'], 'refs/heads/master')
         )
       )
+    strategy:
+      matrix:
+        windows2016:
+          imageName: "vs2017-win2016"
+        windows2019:
+          imageName: "windows-2019"
+      maxParallel: 2
+
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: $(imageName)
+
     steps:
       - template: windows-dependencies.yml
         parameters:
