@@ -27,3 +27,4 @@ bzip2 = ["librocksdb-sys/bzip2"]
 [dependencies]
 libc = "0.2"
 librocksdb-sys = { package = "ckb-librocksdb-sys", path = "librocksdb-sys", version = "6.7.3" }
+tempfile = "3"
