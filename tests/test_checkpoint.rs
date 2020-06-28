@@ -32,7 +32,8 @@ pub fn test_single_checkpoint() {
 
     // Create checkpoint
     let cp1 = Checkpoint::new(&db).unwrap();
-    let cp1_path = TemporaryDBPath::new();
+    let tmp_path = TemporaryDBPath::new();
+    let cp1_path = tmp_path.join("cp1");
     cp1.create_checkpoint(&cp1_path).unwrap();
 
     // Verify checkpoint
@@ -60,7 +61,8 @@ pub fn test_multi_checkpoints() {
 
     // Create first checkpoint
     let cp1 = Checkpoint::new(&db).unwrap();
-    let cp1_path = TemporaryDBPath::new();
+    let tmp_path = TemporaryDBPath::new();
+    let cp1_path = tmp_path.join("cp1");
     cp1.create_checkpoint(&cp1_path).unwrap();
 
     // Verify checkpoint
@@ -81,7 +83,7 @@ pub fn test_multi_checkpoints() {
 
     // Create another checkpoint
     let cp2 = Checkpoint::new(&db).unwrap();
-    let cp2_path = TemporaryDBPath::new();
+    let cp2_path = tmp_path.join("cp2");
     cp2.create_checkpoint(&cp2_path).unwrap();
 
     // Verify second checkpoint
