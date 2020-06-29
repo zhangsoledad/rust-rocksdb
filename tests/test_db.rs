@@ -195,3 +195,44 @@ fn set_option_test() {
         db.set_options(&multiple_options).unwrap();
     }
 }
+
+#[test]
+fn set_option_cf_test() {
+    let path = TemporaryDBPath::new();
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.create_missing_column_families(true);
+        let db = DB::open_cf(&opts, &path, &["cf1"]).unwrap();
+        let cf1 = db.cf_handle("cf1").unwrap();
+        // set an option to valid values
+        assert!(db
+            .set_options_cf(&cf1, &[("disable_auto_compactions", "true")])
+            .is_ok());
+        assert!(db
+            .set_options_cf(&cf1, &[("disable_auto_compactions", "false")])
+            .is_ok());
+        // invalid names/values should result in an error
+        assert!(db
+            .set_options_cf(&cf1, &[("disable_auto_compactions", "INVALID_VALUE")])
+            .is_err());
+        assert!(db
+            .set_options_cf(&cf1, &[("INVALID_NAME", "INVALID_VALUE")])
+            .is_err());
+        // option names/values must not contain NULLs
+        assert!(db
+            .set_options_cf(&cf1, &[("disable_auto_compactions", "true\0")])
+            .is_err());
+        assert!(db
+            .set_options_cf(&cf1, &[("disable_auto_compactions\0", "true")])
+            .is_err());
+        // empty options are not allowed
+        assert!(db.set_options_cf(&cf1, &[]).is_err());
+        // multiple options can be set in a single API call
+        let multiple_options = [
+            ("paranoid_file_checks", "true"),
+            ("report_bg_io_stats", "true"),
+        ];
+        db.set_options_cf(&cf1, &multiple_options).unwrap();
+    }
+}
