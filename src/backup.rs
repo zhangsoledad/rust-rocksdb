@@ -87,7 +87,7 @@ impl BackupEngine {
     /// * `wal_dir` - A path to the wal directory
     /// * `opts` - Restore options
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```ignore
     /// use ckb_rocksdb::backup::{BackupEngine, BackupEngineOptions};
