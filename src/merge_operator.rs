@@ -229,7 +229,7 @@ mod test {
 
     #[test]
     fn mergetest() {
-        use {Options, TemporaryDBPath, DB};
+        use crate::{Options, TemporaryDBPath, DB};
 
         let path = TemporaryDBPath::new();
         let mut opts = Options::default();
@@ -332,9 +332,9 @@ mod test {
 
     #[test]
     fn counting_mergetest() {
+        use crate::{DBCompactionStyle, Options, TemporaryDBPath, DB};
         use std::sync::Arc;
         use std::thread;
-        use {DBCompactionStyle, Options, TemporaryDBPath, DB};
 
         let path = TemporaryDBPath::new();
         let mut opts = Options::default();

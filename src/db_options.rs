@@ -24,13 +24,15 @@ use std::path::Path;
 
 use libc::{self, c_char, c_int, c_uchar, c_uint, c_void, size_t, uint64_t};
 
-use compaction_filter::{self, filter_callback, CompactionFilterCallback, CompactionFilterFn};
-use comparator::{self, ComparatorCallback, CompareFn};
-use ffi;
-use merge_operator::{
+use crate::compaction_filter::{
+    self, filter_callback, CompactionFilterCallback, CompactionFilterFn,
+};
+use crate::comparator::{self, ComparatorCallback, CompareFn};
+use crate::ffi;
+use crate::merge_operator::{
     self, full_merge_callback, partial_merge_callback, MergeFn, MergeOperatorCallback,
 };
-use slice_transform::SliceTransform;
+use crate::slice_transform::SliceTransform;
 
 pub fn new_cache(capacity: size_t) -> *mut ffi::rocksdb_cache_t {
     unsafe { ffi::rocksdb_cache_create_lru(capacity) }
@@ -1512,8 +1514,8 @@ impl Clone for WriteOptions {
 
 #[cfg(test)]
 mod tests {
-    use MemtableFactory;
-    use Options;
+    use crate::MemtableFactory;
+    use crate::Options;
 
     #[test]
     fn test_enable_statistics() {

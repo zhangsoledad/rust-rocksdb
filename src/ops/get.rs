@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-use ffi;
+use crate::ffi;
 use libc::{c_char, size_t};
 
 use crate::{handle::Handle, ColumnFamily, DBVector, Error, ReadOptions};

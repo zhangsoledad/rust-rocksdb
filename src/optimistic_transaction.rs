@@ -1,9 +1,9 @@
+use crate::ffi;
 use crate::{
     handle::{ConstHandle, Handle},
     ops::*,
     ColumnFamily, DBRawIterator, DBVector, Error, ReadOptions,
 };
-use ffi;
 use libc::{c_char, c_uchar, c_void, size_t};
 use std::marker::PhantomData;
 
@@ -194,7 +194,7 @@ impl GetCF<ReadOptions> for OptimisticTransaction {
 }
 
 impl Iterate for OptimisticTransaction {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_transaction_create_iterator(self.inner, readopts.handle()),
@@ -209,7 +209,7 @@ impl IterateCF for OptimisticTransaction {
         &self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'_>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_transaction_create_iterator_cf(
@@ -381,7 +381,7 @@ impl<'a> Drop for OptimisticTransactionSnapshot<'a> {
 }
 
 impl<'a> Iterate for OptimisticTransactionSnapshot<'a> {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
         let mut readopts = readopts.to_owned();
         readopts.set_snapshot(self);
         self.txn.get_raw_iter(&readopts)
@@ -393,7 +393,7 @@ impl<'a> IterateCF for OptimisticTransactionSnapshot<'a> {
         &self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'_>, Error> {
         let mut readopts = readopts.to_owned();
         readopts.set_snapshot(self);
         self.txn.get_raw_iter_cf(cf_handle, &readopts)

@@ -13,11 +13,11 @@
 // limitations under the License.
 
 extern crate ckb_rocksdb as rocksdb;
-extern crate libc;
+use libc;
 
 use libc::size_t;
 
-use rocksdb::{prelude::*, IteratorMode, TemporaryDBPath, WriteBatch};
+use crate::rocksdb::{prelude::*, IteratorMode, TemporaryDBPath, WriteBatch};
 
 #[test]
 fn test_db_vector() {

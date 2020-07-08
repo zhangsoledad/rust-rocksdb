@@ -13,8 +13,8 @@
 // limitations under the License.
 //
 
+use crate::ffi;
 use crate::{Error, DB};
-use ffi;
 
 use libc::{c_int, uint32_t};
 use std::ffi::CString;

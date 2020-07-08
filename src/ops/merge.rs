@@ -1,4 +1,4 @@
-use ffi;
+use crate::ffi;
 use libc::{c_char, size_t};
 
 use crate::{handle::Handle, ColumnFamily, Error, WriteOptions};

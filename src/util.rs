@@ -16,8 +16,6 @@
 use std::path::{Path, PathBuf};
 use tempfile::{tempdir, TempDir};
 
-use crate::{Options, DB};
-
 /// Ensures that DB::Destroy is called and the directory is deleted
 /// for this database when TemporaryDBPath is dropped.
 pub struct TemporaryDBPath {

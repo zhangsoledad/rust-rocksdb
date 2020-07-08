@@ -13,8 +13,8 @@
 // limitations under the License.
 //
 
-use ffi;
-use ffi_util;
+use crate::ffi;
+use crate::ffi_util;
 
 use crate::{
     db_iterator::DBRawIterator,
@@ -24,12 +24,10 @@ use crate::{
     ops, ColumnFamily, Error,
 };
 
-use libc::c_uchar;
 use std::collections::BTreeMap;
 use std::fmt;
 use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, RwLock};
 
 pub struct SecondaryDB {
     pub(crate) inner: *mut ffi::rocksdb_t,
@@ -133,7 +131,7 @@ impl Handle<ffi::rocksdb_t> for SecondaryDB {
 }
 
 impl ops::Iterate for SecondaryDB {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_create_iterator(self.inner, readopts.handle()),
@@ -148,7 +146,7 @@ impl ops::IterateCF for SecondaryDB {
         &self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'_>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_create_iterator_cf(
@@ -188,7 +186,7 @@ impl Drop for SecondaryDB {
 }
 
 impl fmt::Debug for SecondaryDB {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Read-only RocksDB {{ path: {:?} }}", self.path())
     }
 }

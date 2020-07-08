@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-use ffi;
+use crate::ffi;
 
 use crate::{handle::Handle, ColumnFamily, Error};
 

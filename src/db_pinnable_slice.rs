@@ -15,7 +15,7 @@
 
 use libc::size_t;
 
-use ffi;
+use crate::ffi;
 use std::marker::PhantomData;
 use std::ops::Deref;
 use std::slice;

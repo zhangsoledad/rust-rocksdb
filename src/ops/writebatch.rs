@@ -1,4 +1,4 @@
-use ffi;
+use crate::ffi;
 
 use crate::{handle::Handle, Error, WriteBatch, WriteOptions};
 

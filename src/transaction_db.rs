@@ -8,7 +8,7 @@ use crate::{
     ColumnFamily, DBRawIterator, Error, Options, ReadOptions, Transaction, WriteOptions,
 };
 
-use ffi;
+use crate::ffi;
 use libc::{c_char, c_uchar, size_t};
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
@@ -108,7 +108,7 @@ impl TransactionBegin for TransactionDB {
         &self,
         write_options: &WriteOptions,
         tx_options: &TransactionOptions,
-    ) -> Transaction<TransactionDB> {
+    ) -> Transaction<'_, TransactionDB> {
         unsafe {
             let inner = ffi::rocksdb_transaction_begin(
                 self.inner,
@@ -122,7 +122,7 @@ impl TransactionBegin for TransactionDB {
 }
 
 impl Iterate for TransactionDB {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_transactiondb_create_iterator(self.inner, readopts.handle()),
@@ -137,7 +137,7 @@ impl IterateCF for TransactionDB {
         &self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'_>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_transactiondb_create_iterator_cf(
@@ -484,7 +484,7 @@ impl CreateCf for TransactionDB {
 }
 
 impl TransactionDB {
-    pub fn snapshot(&self) -> Snapshot {
+    pub fn snapshot(&self) -> Snapshot<'_> {
         let snapshot = unsafe { ffi::rocksdb_transactiondb_create_snapshot(self.inner) };
         Snapshot {
             db: self,
@@ -529,7 +529,7 @@ impl<'a> Drop for Snapshot<'a> {
 }
 
 impl<'a> Iterate for Snapshot<'a> {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
         let mut ro = readopts.to_owned();
         ro.set_snapshot(self);
         self.db.get_raw_iter(&ro)
@@ -541,7 +541,7 @@ impl<'a> IterateCF for Snapshot<'a> {
         &self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'_>, Error> {
         let mut ro = readopts.to_owned();
         ro.set_snapshot(self);
         self.db.get_raw_iter_cf(cf_handle, &ro)

@@ -15,7 +15,7 @@
 
 use libc::{c_char, c_int};
 
-use ffi_util;
+use crate::ffi_util;
 
 use std::ffi::CString;
 use std::iter;

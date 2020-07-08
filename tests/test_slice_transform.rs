@@ -1,6 +1,6 @@
 extern crate ckb_rocksdb as rocksdb;
 
-use rocksdb::{prelude::*, SliceTransform, TemporaryDBPath};
+use crate::rocksdb::{prelude::*, SliceTransform, TemporaryDBPath};
 
 #[test]
 pub fn test_slice_transform() {

@@ -1,4 +1,4 @@
-use ffi;
+use crate::ffi;
 
 use crate::{ffi_util::to_cstring, handle::Handle, ColumnFamily, Error, Options};
 

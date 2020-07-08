@@ -364,7 +364,7 @@ impl<'a> Drop for DBRawIterator<'a> {
 }
 
 impl<'a> DBIterator<'a> {
-    pub fn set_mode(&mut self, mode: IteratorMode) {
+    pub fn set_mode(&mut self, mode: IteratorMode<'_>) {
         match mode {
             IteratorMode::Start => {
                 self.raw.seek_to_first();

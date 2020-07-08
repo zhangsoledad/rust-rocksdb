@@ -13,8 +13,8 @@
 // limitations under the License.
 //
 
-use ffi;
-use ffi_util::to_cpath;
+use crate::ffi;
+use crate::ffi_util::to_cpath;
 
 use crate::{
     handle::Handle,
@@ -150,7 +150,7 @@ impl DB {
         &self.path.as_path()
     }
 
-    pub fn snapshot(&self) -> Snapshot {
+    pub fn snapshot(&self) -> Snapshot<'_> {
         let snapshot = unsafe { ffi::rocksdb_create_snapshot(self.inner) };
         Snapshot {
             db: self,
@@ -171,13 +171,13 @@ impl Drop for DB {
 }
 
 impl fmt::Debug for DB {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "RocksDB {{ path: {:?} }}", self.path())
     }
 }
 
 impl Iterate for DB {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_create_iterator(self.inner, readopts.handle()),
@@ -192,7 +192,7 @@ impl IterateCF for DB {
         &self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'_>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_create_iterator_cf(

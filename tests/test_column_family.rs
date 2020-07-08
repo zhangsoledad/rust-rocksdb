@@ -14,7 +14,7 @@
 //
 extern crate ckb_rocksdb as rocksdb;
 
-use rocksdb::{prelude::*, ColumnFamilyDescriptor, MergeOperands, TemporaryDBPath};
+use crate::rocksdb::{prelude::*, ColumnFamilyDescriptor, MergeOperands, TemporaryDBPath};
 
 #[test]
 fn test_column_family() {
