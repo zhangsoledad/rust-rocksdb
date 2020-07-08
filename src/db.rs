@@ -177,7 +177,7 @@ impl fmt::Debug for DB {
 }
 
 impl Iterate for DB {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
+    fn get_raw_iter<'a: 'b, 'b>(&'a self, readopts: &ReadOptions) -> DBRawIterator<'b> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_create_iterator(self.inner, readopts.handle()),
@@ -188,11 +188,11 @@ impl Iterate for DB {
 }
 
 impl IterateCF for DB {
-    fn get_raw_iter_cf(
-        &self,
+    fn get_raw_iter_cf<'a: 'b, 'b>(
+        &'a self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator<'_>, Error> {
+    ) -> Result<DBRawIterator<'b>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_create_iterator_cf(

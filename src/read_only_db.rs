@@ -113,7 +113,7 @@ impl Handle<ffi::rocksdb_t> for ReadOnlyDB {
 }
 
 impl ops::Iterate for ReadOnlyDB {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
+    fn get_raw_iter<'a: 'b, 'b>(&'a self, readopts: &ReadOptions) -> DBRawIterator<'b> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_create_iterator(self.inner, readopts.handle()),
@@ -124,11 +124,11 @@ impl ops::Iterate for ReadOnlyDB {
 }
 
 impl ops::IterateCF for ReadOnlyDB {
-    fn get_raw_iter_cf(
-        &self,
+    fn get_raw_iter_cf<'a: 'b, 'b>(
+        &'a self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator<'_>, Error> {
+    ) -> Result<DBRawIterator<'b>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_create_iterator_cf(

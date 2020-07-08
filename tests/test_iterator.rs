@@ -295,3 +295,9 @@ fn test_full_iterator() {
         assert_eq!(a_iterator.collect::<Vec<_>>(), expected)
     }
 }
+
+#[test]
+fn test_iterator_outlive_db() {
+    let t = trybuild::TestCases::new();
+    t.compile_fail("tests/fail/iterator/*.rs");
+}

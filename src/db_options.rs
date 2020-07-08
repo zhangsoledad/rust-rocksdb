@@ -22,7 +22,7 @@ use std::ffi::{CStr, CString};
 use std::mem;
 use std::path::Path;
 
-use libc::{self, c_char, c_int, c_uchar, c_uint, c_void, size_t, uint64_t};
+use libc::{self, c_char, c_int, c_uchar, c_uint, c_void, size_t};
 
 use crate::compaction_filter::{
     self, filter_callback, CompactionFilterCallback, CompactionFilterFn,
@@ -345,7 +345,7 @@ impl Options {
         unsafe {
             ffi::rocksdb_options_optimize_level_style_compaction(
                 self.inner,
-                memtable_memory_budget as uint64_t,
+                memtable_memory_budget as u64,
             );
         }
     }

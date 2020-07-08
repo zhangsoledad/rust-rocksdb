@@ -196,8 +196,8 @@ where
         }
     }
 }
-impl<'a, T> Iterate for Transaction<'a, T> {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
+impl<T> Iterate for Transaction<'_, T> {
+    fn get_raw_iter<'a: 'b, 'b>(&'a self, readopts: &ReadOptions) -> DBRawIterator<'b> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_transaction_create_iterator(self.inner, readopts.handle()),
@@ -207,12 +207,12 @@ impl<'a, T> Iterate for Transaction<'a, T> {
     }
 }
 
-impl<'a, T> IterateCF for Transaction<'a, T> {
-    fn get_raw_iter_cf(
-        &self,
+impl<T> IterateCF for Transaction<'_, T> {
+    fn get_raw_iter_cf<'a: 'b, 'b>(
+        &'a self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator<'_>, Error> {
+    ) -> Result<DBRawIterator<'b>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_transaction_create_iterator_cf(
@@ -383,20 +383,20 @@ impl<'a, T> Drop for TransactionSnapshot<'a, T> {
     }
 }
 
-impl<'a, T: Iterate> Iterate for TransactionSnapshot<'a, T> {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator<'_> {
+impl<T: Iterate> Iterate for TransactionSnapshot<'_, T> {
+    fn get_raw_iter<'a: 'b, 'b>(&'a self, readopts: &ReadOptions) -> DBRawIterator<'b> {
         let mut readopts = readopts.to_owned();
         readopts.set_snapshot(self);
         self.db.get_raw_iter(&readopts)
     }
 }
 
-impl<'a, T: IterateCF> IterateCF for TransactionSnapshot<'a, T> {
-    fn get_raw_iter_cf(
-        &self,
+impl<T: IterateCF> IterateCF for TransactionSnapshot<'_, T> {
+    fn get_raw_iter_cf<'a: 'b, 'b>(
+        &'a self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator<'_>, Error> {
+    ) -> Result<DBRawIterator<'b>, Error> {
         let mut readopts = readopts.to_owned();
         readopts.set_snapshot(self);
         self.db.get_raw_iter_cf(cf_handle, &readopts)
