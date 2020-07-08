@@ -204,7 +204,7 @@ impl WriteBatch {
     /// keys exist in the range ["begin_key", "end_key").
     pub fn delete_range_cf<K: AsRef<[u8]>>(
         &mut self,
-        cf: ColumnFamily,
+        cf: &ColumnFamily,
         from: K,
         to: K,
     ) -> Result<(), Error> {
