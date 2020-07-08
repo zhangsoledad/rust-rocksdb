@@ -463,7 +463,7 @@ impl MergeCF<WriteOptions> for TransactionDB {
     }
 }
 
-impl CreateCf for TransactionDB {
+impl CreateCF for TransactionDB {
     fn create_cf<N: AsRef<str>>(&mut self, name: N, opts: &Options) -> Result<(), Error> {
         let cname = to_cstring(
             name.as_ref(),

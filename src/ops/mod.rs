@@ -50,8 +50,8 @@ pub trait Read {}
 pub trait Write {}
 
 pub use self::checkpoint::CreateCheckpointObject;
-pub use self::columnfamily::CreateCf;
-pub use self::columnfamily::DropCf;
+pub use self::columnfamily::CreateCF;
+pub use self::columnfamily::DropCF;
 pub use self::columnfamily::GetColumnFamilys;
 pub use self::compact::{CompactRange, CompactRangeCF};
 pub use self::flush::Flush;
