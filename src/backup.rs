@@ -13,10 +13,10 @@
 // limitations under the License.
 //
 
+use crate::ffi;
 use crate::{Error, DB};
-use ffi;
 
-use libc::{c_int, uint32_t};
+use libc::c_int;
 use std::ffi::CString;
 use std::path::Path;
 
@@ -73,7 +73,7 @@ impl BackupEngine {
         unsafe {
             ffi_try!(ffi::rocksdb_backup_engine_purge_old_backups(
                 self.inner,
-                num_backups_to_keep as uint32_t,
+                num_backups_to_keep as u32,
             ));
             Ok(())
         }
@@ -87,7 +87,7 @@ impl BackupEngine {
     /// * `wal_dir` - A path to the wal directory
     /// * `opts` - Restore options
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```ignore
     /// use ckb_rocksdb::backup::{BackupEngine, BackupEngineOptions};

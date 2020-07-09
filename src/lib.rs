@@ -60,9 +60,7 @@
 //! ```
 //!
 
-extern crate libc;
 pub extern crate librocksdb_sys as ffi;
-extern crate tempfile;
 
 #[macro_use]
 pub mod ffi_util;
@@ -94,29 +92,29 @@ mod write_batch;
 
 pub mod prelude;
 
-pub use column_family::ColumnFamilyDescriptor;
-pub use compaction_filter::Decision as CompactionDecision;
-pub use db::DB;
-pub use db_iterator::{DBIterator, DBRawIterator, Direction, IteratorMode};
-pub use db_options::{DBCompactionStyle, DBCompressionType, DBRecoveryMode, ReadOptions};
-pub use db_pinnable_slice::DBPinnableSlice;
-pub use db_vector::DBVector;
-pub use handle::{ConstHandle, Handle};
-pub use read_only_db::ReadOnlyDB;
-pub use secondary_db::{SecondaryDB, SecondaryOpenDescriptor};
-pub use slice_transform::SliceTransform;
-pub use snapshot::Snapshot;
-pub use util::TemporaryDBPath;
-pub use write_batch::WriteBatch;
+pub use crate::column_family::ColumnFamilyDescriptor;
+pub use crate::compaction_filter::Decision as CompactionDecision;
+pub use crate::db::DB;
+pub use crate::db_iterator::{DBIterator, DBRawIterator, Direction, IteratorMode};
+pub use crate::db_options::{DBCompactionStyle, DBCompressionType, DBRecoveryMode, ReadOptions};
+pub use crate::db_pinnable_slice::DBPinnableSlice;
+pub use crate::db_vector::DBVector;
+pub use crate::handle::{ConstHandle, Handle};
+pub use crate::read_only_db::ReadOnlyDB;
+pub use crate::secondary_db::{SecondaryDB, SecondaryOpenDescriptor};
+pub use crate::slice_transform::SliceTransform;
+pub use crate::snapshot::Snapshot;
+pub use crate::util::TemporaryDBPath;
+pub use crate::write_batch::WriteBatch;
 
-pub use merge_operator::MergeOperands;
+pub use crate::merge_operator::MergeOperands;
 use std::error;
 use std::fmt;
 
-pub use optimistic_transaction::{OptimisticTransaction, OptimisticTransactionSnapshot};
-pub use optimistic_transaction_db::{OptimisticTransactionDB, OptimisticTransactionOptions};
-pub use transaction::{Transaction, TransactionSnapshot};
-pub use transaction_db::{TransactionDB, TransactionDBOptions, TransactionOptions};
+pub use crate::optimistic_transaction::{OptimisticTransaction, OptimisticTransactionSnapshot};
+pub use crate::optimistic_transaction_db::{OptimisticTransactionDB, OptimisticTransactionOptions};
+pub use crate::transaction::{Transaction, TransactionSnapshot};
+pub use crate::transaction_db::{TransactionDB, TransactionDBOptions, TransactionOptions};
 
 /// A simple wrapper round a string, used for errors reported from
 /// ffi calls.
@@ -154,7 +152,7 @@ impl error::Error for Error {
 }
 
 impl fmt::Display for Error {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         self.message.fmt(formatter)
     }
 }
@@ -176,6 +174,19 @@ pub enum BlockBasedIndexType {
 
     /// A two-level index implementation. Both levels are binary search indexes.
     TwoLevelIndexSearch,
+}
+
+/// Used by BlockBasedOptions::set_data_block_index_type.
+#[repr(C)]
+pub enum DataBlockIndexType {
+    /// Use binary search when performing point lookup for keys in data blocks.
+    /// This is the default.
+    BinarySearch = 0,
+
+    /// Appends a compact hash table to the end of the data block for efficient indexing. Backwards
+    /// compatible with databases created without this feature. Once turned on, existing data will
+    /// be gradually converted to the hash index format.
+    BinaryAndHash = 1,
 }
 
 /// Defines the underlying memtable implementation.
@@ -291,7 +302,7 @@ pub struct FlushOptions {
 ///     write_options.set_sync(false);
 ///     write_options.disable_wal(true);
 ///
-///     db.write_opt(batch, &write_options);
+///     db.write_opt(&batch, &write_options);
 /// }
 /// let _ = DB::destroy(&Options::default(), path);
 /// ```

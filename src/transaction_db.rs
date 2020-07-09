@@ -8,7 +8,7 @@ use crate::{
     ColumnFamily, DBRawIterator, Error, Options, ReadOptions, Transaction, WriteOptions,
 };
 
-use ffi;
+use crate::ffi;
 use libc::{c_char, c_uchar, size_t};
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
@@ -108,7 +108,7 @@ impl TransactionBegin for TransactionDB {
         &self,
         write_options: &WriteOptions,
         tx_options: &TransactionOptions,
-    ) -> Transaction<TransactionDB> {
+    ) -> Transaction<'_, TransactionDB> {
         unsafe {
             let inner = ffi::rocksdb_transaction_begin(
                 self.inner,
@@ -122,7 +122,7 @@ impl TransactionBegin for TransactionDB {
 }
 
 impl Iterate for TransactionDB {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter<'a: 'b, 'b>(&'a self, readopts: &ReadOptions) -> DBRawIterator<'b> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_transactiondb_create_iterator(self.inner, readopts.handle()),
@@ -133,11 +133,11 @@ impl Iterate for TransactionDB {
 }
 
 impl IterateCF for TransactionDB {
-    fn get_raw_iter_cf(
-        &self,
+    fn get_raw_iter_cf<'a: 'b, 'b>(
+        &'a self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'b>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_transactiondb_create_iterator_cf(
@@ -463,7 +463,7 @@ impl MergeCF<WriteOptions> for TransactionDB {
     }
 }
 
-impl CreateCf for TransactionDB {
+impl CreateCF for TransactionDB {
     fn create_cf<N: AsRef<str>>(&mut self, name: N, opts: &Options) -> Result<(), Error> {
         let cname = to_cstring(
             name.as_ref(),
@@ -484,7 +484,7 @@ impl CreateCf for TransactionDB {
 }
 
 impl TransactionDB {
-    pub fn snapshot(&self) -> Snapshot {
+    pub fn snapshot(&self) -> Snapshot<'_> {
         let snapshot = unsafe { ffi::rocksdb_transactiondb_create_snapshot(self.inner) };
         Snapshot {
             db: self,
@@ -528,20 +528,20 @@ impl<'a> Drop for Snapshot<'a> {
     }
 }
 
-impl<'a> Iterate for Snapshot<'a> {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+impl Iterate for Snapshot<'_> {
+    fn get_raw_iter<'a: 'b, 'b>(&'a self, readopts: &ReadOptions) -> DBRawIterator<'b> {
         let mut ro = readopts.to_owned();
         ro.set_snapshot(self);
         self.db.get_raw_iter(&ro)
     }
 }
 
-impl<'a> IterateCF for Snapshot<'a> {
-    fn get_raw_iter_cf(
-        &self,
+impl IterateCF for Snapshot<'_> {
+    fn get_raw_iter_cf<'a: 'b, 'b>(
+        &'a self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'b>, Error> {
         let mut ro = readopts.to_owned();
         ro.set_snapshot(self);
         self.db.get_raw_iter_cf(cf_handle, &ro)
@@ -549,7 +549,11 @@ impl<'a> IterateCF for Snapshot<'a> {
 }
 
 impl WriteOps for TransactionDB {
-    fn write_full(&self, batch: WriteBatch, writeopts: Option<&WriteOptions>) -> Result<(), Error> {
+    fn write_full(
+        &self,
+        batch: &WriteBatch,
+        writeopts: Option<&WriteOptions>,
+    ) -> Result<(), Error> {
         let mut default_writeopts = None;
 
         let wo_handle = WriteOptions::input_or_default(writeopts, &mut default_writeopts)?;

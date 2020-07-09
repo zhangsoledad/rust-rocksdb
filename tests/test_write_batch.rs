@@ -14,7 +14,7 @@
 //
 extern crate ckb_rocksdb as rocksdb;
 
-use rocksdb::WriteBatch;
+use crate::rocksdb::WriteBatch;
 
 #[test]
 fn test_write_batch_clear() {

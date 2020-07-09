@@ -13,9 +13,8 @@
 // limitations under the License.
 
 extern crate ckb_rocksdb as rocksdb;
-extern crate libc;
 
-use rocksdb::{prelude::*, ReadOnlyDB, TemporaryDBPath};
+use crate::rocksdb::{prelude::*, ReadOnlyDB, TemporaryDBPath};
 
 #[test]
 fn open_existing_db_in_read_only() {

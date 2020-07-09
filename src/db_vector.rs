@@ -58,7 +58,7 @@ impl DBVector {
     /// Requires that the ponter be allocated by a `malloc` derivative (all C libraries), and
     /// `val_len` be the length of the C array to be safe (since `sizeof(u8) = 1`).
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```ignore
     /// let buf_len: libc::size_t = unsafe { mem::uninitialized() };

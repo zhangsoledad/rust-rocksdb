@@ -14,7 +14,7 @@
 //
 extern crate ckb_rocksdb as rocksdb;
 
-use rocksdb::{prelude::*, Direction, IteratorMode, MemtableFactory, TemporaryDBPath};
+use crate::rocksdb::{prelude::*, Direction, IteratorMode, MemtableFactory, TemporaryDBPath};
 
 fn cba(input: &[u8]) -> Box<[u8]> {
     input.to_vec().into_boxed_slice()
@@ -294,4 +294,10 @@ fn test_full_iterator() {
         let a_iterator = db.full_iterator(IteratorMode::Start);
         assert_eq!(a_iterator.collect::<Vec<_>>(), expected)
     }
+}
+
+#[test]
+fn test_iterator_outlive_db() {
+    let t = trybuild::TestCases::new();
+    t.compile_fail("tests/fail/iterator/*.rs");
 }

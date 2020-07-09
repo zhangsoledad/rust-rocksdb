@@ -1,4 +1,4 @@
-use ffi;
+use crate::ffi;
 
 use crate::{ffi_util::to_cstring, handle::Handle, ColumnFamily, Error, Options};
 
@@ -15,15 +15,15 @@ pub trait GetColumnFamilys {
     }
 }
 
-pub trait CreateCf {
+pub trait CreateCF {
     fn create_cf<N: AsRef<str>>(&mut self, name: N, opts: &Options) -> Result<(), Error>;
 }
 
-pub trait DropCf {
+pub trait DropCF {
     fn drop_cf(&mut self, name: &str) -> Result<(), Error>;
 }
 
-impl<T> CreateCf for T
+impl<T> CreateCF for T
 where
     T: Handle<ffi::rocksdb_t> + super::Write + GetColumnFamilys,
 {
@@ -46,7 +46,7 @@ where
     }
 }
 
-impl<T> DropCf for T
+impl<T> DropCF for T
 where
     T: Handle<ffi::rocksdb_t> + super::Write + GetColumnFamilys,
 {

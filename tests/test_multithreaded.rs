@@ -14,7 +14,7 @@
 //
 extern crate ckb_rocksdb as rocksdb;
 
-use rocksdb::{ops::*, TemporaryDBPath, DB};
+use crate::rocksdb::{ops::*, TemporaryDBPath, DB};
 
 use std::sync::Arc;
 use std::thread;

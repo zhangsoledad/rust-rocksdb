@@ -13,8 +13,8 @@
 // limitations under the License.
 //
 
-use ffi;
-use ffi_util::to_cpath;
+use crate::ffi;
+use crate::ffi_util::to_cpath;
 
 use crate::{
     handle::Handle,
@@ -150,7 +150,7 @@ impl DB {
         &self.path.as_path()
     }
 
-    pub fn snapshot(&self) -> Snapshot {
+    pub fn snapshot(&self) -> Snapshot<'_> {
         let snapshot = unsafe { ffi::rocksdb_create_snapshot(self.inner) };
         Snapshot {
             db: self,
@@ -171,13 +171,13 @@ impl Drop for DB {
 }
 
 impl fmt::Debug for DB {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "RocksDB {{ path: {:?} }}", self.path())
     }
 }
 
 impl Iterate for DB {
-    fn get_raw_iter(&self, readopts: &ReadOptions) -> DBRawIterator {
+    fn get_raw_iter<'a: 'b, 'b>(&'a self, readopts: &ReadOptions) -> DBRawIterator<'b> {
         unsafe {
             DBRawIterator {
                 inner: ffi::rocksdb_create_iterator(self.inner, readopts.handle()),
@@ -188,11 +188,11 @@ impl Iterate for DB {
 }
 
 impl IterateCF for DB {
-    fn get_raw_iter_cf(
-        &self,
+    fn get_raw_iter_cf<'a: 'b, 'b>(
+        &'a self,
         cf_handle: &ColumnFamily,
         readopts: &ReadOptions,
-    ) -> Result<DBRawIterator, Error> {
+    ) -> Result<DBRawIterator<'b>, Error> {
         unsafe {
             Ok(DBRawIterator {
                 inner: ffi::rocksdb_create_iterator_cf(
@@ -283,7 +283,7 @@ fn writebatch_works() {
             assert_eq!(batch.len(), 3);
             assert!(!batch.is_empty());
             assert!(db.get(b"k1").unwrap().is_none());
-            let p = db.write(batch);
+            let p = db.write(&batch);
             assert!(p.is_ok());
             let r: Result<Option<DBVector>, Error> = db.get(b"k1");
             assert!(r.unwrap().unwrap().to_utf8().unwrap() == "v1111");
@@ -294,7 +294,7 @@ fn writebatch_works() {
             let _ = batch.delete(b"k1");
             assert_eq!(batch.len(), 1);
             assert!(!batch.is_empty());
-            let p = db.write(batch);
+            let p = db.write(&batch);
             assert!(p.is_ok());
             assert!(db.get(b"k1").unwrap().is_none());
         }
@@ -304,7 +304,7 @@ fn writebatch_works() {
             let _ = batch.delete_range(b"k2", b"k4");
             assert_eq!(batch.len(), 1);
             assert!(!batch.is_empty());
-            let p = db.write(batch);
+            let p = db.write(&batch);
             assert!(p.is_ok());
             assert!(db.get(b"k2").unwrap().is_none());
             assert!(db.get(b"k3").unwrap().is_none());

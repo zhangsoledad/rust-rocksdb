@@ -17,7 +17,7 @@ use std::slice;
 
 use libc::{c_char, c_void, size_t};
 
-use ffi;
+use crate::ffi;
 
 /// A SliceTranform is a generic pluggable way of transforming one string
 /// to another. Its primary use-case is in configuring rocksdb
@@ -36,7 +36,7 @@ pub struct SliceTransform {
 impl SliceTransform {
     pub fn create(
         name: &str,
-        transform_fn: TransformFn,
+        transform_fn: TransformFn<'_>,
         in_domain_fn: Option<InDomainFn>,
     ) -> SliceTransform {
         let cb = Box::into_raw(Box::new(TransformCallback {
@@ -50,14 +50,7 @@ impl SliceTransform {
                 cb as *mut c_void,
                 Some(slice_transform_destructor_callback),
                 Some(transform_callback),
-                // this is ugly, but I can't get the compiler
-                // not to barf with "expected fn pointer, found fn item"
-                // without this. sorry.
-                if in_domain_fn.is_some() {
-                    Some(in_domain_callback)
-                } else {
-                    None
-                },
+                Some(in_domain_callback),
                 // this None points to the deprecated InRange callback
                 None,
                 Some(slice_transform_name_callback),
@@ -90,11 +83,11 @@ pub struct TransformCallback<'a> {
 }
 
 pub unsafe extern "C" fn slice_transform_destructor_callback(raw_cb: *mut c_void) {
-    Box::from_raw(raw_cb as *mut TransformCallback);
+    Box::from_raw(raw_cb as *mut TransformCallback<'_>);
 }
 
 pub unsafe extern "C" fn slice_transform_name_callback(raw_cb: *mut c_void) -> *const c_char {
-    let cb = &mut *(raw_cb as *mut TransformCallback);
+    let cb = &mut *(raw_cb as *mut TransformCallback<'_>);
     cb.name.as_ptr()
 }
 
@@ -104,7 +97,7 @@ pub unsafe extern "C" fn transform_callback(
     key_len: size_t,
     dst_length: *mut size_t,
 ) -> *mut c_char {
-    let cb = &mut *(raw_cb as *mut TransformCallback);
+    let cb = &mut *(raw_cb as *mut TransformCallback<'_>);
     let key = slice::from_raw_parts(raw_key as *const u8, key_len as usize);
     let prefix = (cb.transform_fn)(key);
     *dst_length = prefix.len() as size_t;
@@ -116,8 +109,11 @@ pub unsafe extern "C" fn in_domain_callback(
     raw_key: *const c_char,
     key_len: size_t,
 ) -> u8 {
-    let cb = &mut *(raw_cb as *mut TransformCallback);
+    let cb = &mut *(raw_cb as *mut TransformCallback<'_>);
     let key = slice::from_raw_parts(raw_key as *const u8, key_len as usize);
-    let in_domain = cb.in_domain_fn.unwrap();
-    in_domain(key) as u8
+    if let Some(in_domain) = cb.in_domain_fn {
+        in_domain(key) as u8
+    } else {
+        0xff
+    }
 }

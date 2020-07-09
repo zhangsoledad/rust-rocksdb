@@ -13,14 +13,14 @@
 // limitations under the License.
 //
 
+use crate::ffi;
 use crate::ops::*;
-use ffi;
-use std::ffi::CString;
-use std::path::Path;
 ///! Implementation of bindings to RocksDB Checkpoint[1] API
 ///
 /// [1]: https://github.com/facebook/rocksdb/wiki/Checkpoints
-use {Error, DB};
+use crate::{Error, DB};
+use std::ffi::CString;
+use std::path::Path;
 
 /// Undocumented parameter for `ffi::rocksdb_checkpoint_create` function. Zero by default.
 const LOG_SIZE_FOR_FLUSH: u64 = 0_u64;

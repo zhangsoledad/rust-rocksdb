@@ -1,5 +1,5 @@
+use crate::ffi;
 use crate::{checkpoint::Checkpoint, handle::Handle, Error};
-use ffi;
 
 pub trait CreateCheckpointObject {
     unsafe fn create_checkpoint_object_raw(&self) -> Result<*mut ffi::rocksdb_checkpoint_t, Error>;

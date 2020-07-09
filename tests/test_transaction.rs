@@ -1,6 +1,6 @@
 extern crate ckb_rocksdb as rocksdb;
 
-use rocksdb::{
+use crate::rocksdb::{
     prelude::*, MergeOperands, Options, TemporaryDBPath, TransactionDB, TransactionDBOptions,
     TransactionOptions, WriteOptions,
 };

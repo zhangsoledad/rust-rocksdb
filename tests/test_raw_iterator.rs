@@ -14,7 +14,7 @@
 //
 extern crate ckb_rocksdb as rocksdb;
 
-use rocksdb::{prelude::*, TemporaryDBPath};
+use crate::rocksdb::{prelude::*, TemporaryDBPath};
 
 #[test]
 pub fn test_forwards_iteration() {
@@ -152,7 +152,7 @@ pub fn test_seek_for_prev() {
 
 #[test]
 fn iterator_test_past_end() {
-    use rocksdb::IteratorMode;
+    use crate::rocksdb::IteratorMode;
 
     let n = TemporaryDBPath::new();
     {
