@@ -46,6 +46,7 @@ fn build_rocksdb() {
     config.include("rocksdb/include/");
     config.include("rocksdb/");
     config.include("rocksdb/third-party/gtest-1.8.1/fused-src/");
+    config.include("./");
 
     if cfg!(feature = "snappy") {
         config.define("SNAPPY", Some("1"));
@@ -167,6 +168,7 @@ fn build_rocksdb() {
         config.file(&file);
     }
 
+    config.file("patches/rocksdb.cc");
     config.file("build_version.cc");
 
     config.cpp(true);
@@ -303,6 +305,7 @@ fn try_to_find_and_link_lib(lib_name: &str) -> bool {
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=rocksdb/");
+    println!("cargo:rerun-if-changed=patches/");
     fail_on_empty_directory("rocksdb");
     build_rocksdb();
 
