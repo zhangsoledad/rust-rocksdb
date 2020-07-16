@@ -48,6 +48,9 @@ extern "C" {
     pub fn rocksdb_null_cache() -> *mut rocksdb_cache_t;
 }
 extern "C" {
+    pub fn rocksdb_options_clone(options: *mut rocksdb_options_t) -> *mut rocksdb_options_t;
+}
+extern "C" {
     pub fn rocksdb_column_family_descriptors_create() -> *mut rocksdb_column_family_descriptors_t;
 }
 extern "C" {

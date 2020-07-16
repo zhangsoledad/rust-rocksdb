@@ -17,6 +17,7 @@ use crate::{handle::Handle, ColumnFamily, Options};
 /// A descriptor for a RocksDB column family.
 ///
 /// A description of the column family, containing the name and `Options`.
+#[derive(Clone)]
 pub struct ColumnFamilyDescriptor {
     pub(crate) name: String,
     pub(crate) options: Options,
@@ -32,6 +33,10 @@ impl ColumnFamilyDescriptor {
             name: name.into(),
             options,
         }
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
     }
 }
 

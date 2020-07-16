@@ -23,7 +23,7 @@
   level0_stop_writes_trigger=36
   write_buffer_size=4194000
   min_write_buffer_number_to_merge=1
-  num_levels=7
+  num_levels=3
   compaction_filter_factory=nullptr
   compaction_style=kCompactionStyleLevel
 

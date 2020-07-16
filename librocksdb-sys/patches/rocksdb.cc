@@ -36,6 +36,12 @@ extern "C" {
         return c;
     }
 
+    rocksdb_options_t* rocksdb_options_clone(rocksdb_options_t* options) {
+        rocksdb_options_t* o = new rocksdb_options_t;
+        o->rep = Options(options->rep);
+        return o;
+    }
+
     rocksdb_column_family_descriptors_t* rocksdb_column_family_descriptors_create() {
         return new rocksdb_column_family_descriptors_t;
     }

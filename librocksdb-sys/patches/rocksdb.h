@@ -17,6 +17,9 @@ extern ROCKSDB_LIBRARY_API
     rocksdb_cache_t* rocksdb_null_cache();
 
 extern ROCKSDB_LIBRARY_API
+    rocksdb_options_t* rocksdb_options_clone(rocksdb_options_t* options);
+
+extern ROCKSDB_LIBRARY_API
     rocksdb_column_family_descriptors_t* rocksdb_column_family_descriptors_create();
 
 extern ROCKSDB_LIBRARY_API

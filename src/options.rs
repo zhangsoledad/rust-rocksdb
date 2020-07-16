@@ -16,6 +16,7 @@ use std::{ffi::CStr, path};
 
 use crate::{db_options::new_cache, ffi, ffi_util, ColumnFamilyDescriptor, Error, Options};
 
+#[derive(Clone)]
 pub struct FullOptions {
     pub db_opts: Options,
     pub cf_descriptors: Vec<ColumnFamilyDescriptor>,
@@ -70,5 +71,48 @@ impl FullOptions {
                 cf_descriptors,
             })
         }
+    }
+
+    pub fn complete_column_families(
+        &mut self,
+        cf_names: &[&str],
+        ignore_unknown_column_families: bool,
+    ) -> Result<(), Error> {
+        let cf_name_default = "default";
+        let mut options_default = None;
+        for cfd in &self.cf_descriptors {
+            if cfd.name == cf_name_default {
+                options_default = Some(cfd.options.clone());
+                continue;
+            }
+            if cf_names.iter().any(|cf_name| &cfd.name == cf_name) {
+                continue;
+            }
+            if !ignore_unknown_column_families {
+                return Err(Error::new(format!(
+                    "an unknown column family named \"{}\"",
+                    cfd.name
+                )));
+            }
+        }
+        if options_default.is_none() {
+            let cf = ColumnFamilyDescriptor::new(cf_name_default, Options::default());
+            options_default = Some(cf.options.clone());
+            self.cf_descriptors.insert(0, cf);
+        }
+        let options_default = options_default.unwrap();
+        for cf_name in cf_names {
+            if cf_name == &cf_name_default {
+                return Err(Error::new(format!(
+                    "don't name a user-defined column family as \"{}\"",
+                    cf_name
+                )));
+            }
+            if self.cf_descriptors.iter().all(|cfd| &cfd.name != cf_name) {
+                let cf = ColumnFamilyDescriptor::new(cf_name.to_owned(), options_default.clone());
+                self.cf_descriptors.push(cf);
+            }
+        }
+        Ok(())
     }
 }
