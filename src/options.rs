@@ -73,6 +73,23 @@ impl FullOptions {
         }
     }
 
+    /* This method is used to check those column families which are ignored in the options file,
+     * and create column family descriptors with default options for them.
+     *
+     * For example:
+     * If there is only 'cf_A' in the options file, but in fact we need both of 'cf_A' and 'cf_B',
+     * after we use `Self::load_from_file(..)`, we will get only two `ColumnFamilyDescriptors`:
+     * 'default' and 'cf_A'.
+     * The we can call `full_options.complete_column_families(&["cf_A", "cf_B"])` to add the
+     * `ColumnFamilyDescriptor` for "cf_B" with the "default" column family options.
+     *
+     * Notice:
+     * The "default" column family options is not default column family options.
+     * They are same only if no "default" column family options was provided in the options file.
+     *
+     * If `ignore_unknown_column_families` is `false` and there has column families which were
+     * provided in the options file but not in the `cf_names`, this method will return an error.
+     */
     pub fn complete_column_families(
         &mut self,
         cf_names: &[&str],
