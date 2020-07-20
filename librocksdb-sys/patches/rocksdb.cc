@@ -101,6 +101,8 @@ extern "C" {
             }
             full_opts.cf_descs = cf_descs;
             return full_opts;
+        } else {
+            delete db_opts;
         }
         if (*errptr != nullptr) {
             free(*errptr);
