@@ -80,7 +80,7 @@ impl FullOptions {
      * If there is only 'cf_A' in the options file, but in fact we need both of 'cf_A' and 'cf_B',
      * after we use `Self::load_from_file(..)`, we will get only two `ColumnFamilyDescriptors`:
      * 'default' and 'cf_A'.
-     * The we can call `full_options.complete_column_families(&["cf_A", "cf_B"])` to add the
+     * Then we can call `full_options.complete_column_families(&["cf_A", "cf_B"])` to add the
      * `ColumnFamilyDescriptor` for "cf_B" with the "default" column family options.
      *
      * Notice:
