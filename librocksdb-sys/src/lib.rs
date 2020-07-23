@@ -21,8 +21,12 @@ extern crate libc;
 use libc::c_int;
 
 mod bindings;
+#[cfg(test)]
+mod patches_tests;
 
 pub use bindings::*;
+
+include!("patches.rs");
 
 #[no_mangle]
 pub fn bz_internal_error(errcode: c_int) {

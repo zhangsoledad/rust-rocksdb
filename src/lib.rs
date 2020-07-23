@@ -82,6 +82,7 @@ mod open_raw;
 pub mod ops;
 mod optimistic_transaction;
 mod optimistic_transaction_db;
+mod options;
 mod read_only_db;
 mod secondary_db;
 mod slice_transform;
@@ -100,6 +101,7 @@ pub use crate::db_options::{DBCompactionStyle, DBCompressionType, DBRecoveryMode
 pub use crate::db_pinnable_slice::DBPinnableSlice;
 pub use crate::db_vector::DBVector;
 pub use crate::handle::{ConstHandle, Handle};
+pub use crate::options::FullOptions;
 pub use crate::read_only_db::ReadOnlyDB;
 pub use crate::secondary_db::{SecondaryDB, SecondaryOpenDescriptor};
 pub use crate::slice_transform::SliceTransform;
