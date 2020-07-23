@@ -1996,3 +1996,9 @@ impl ConstHandle<ffi::rocksdb_options_t> for Options {
         self.inner
     }
 }
+
+impl Handle<ffi::rocksdb_options_t> for Options {
+    fn handle(&self) -> *mut ffi::rocksdb_options_t {
+        self.inner
+    }
+}
