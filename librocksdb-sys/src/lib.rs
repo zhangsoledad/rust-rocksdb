@@ -27,6 +27,7 @@ mod patches_tests;
 pub use bindings::*;
 
 include!("patches.rs");
+include!("compact_on_deletion_collector.rs");
 
 #[no_mangle]
 pub fn bz_internal_error(errcode: c_int) {

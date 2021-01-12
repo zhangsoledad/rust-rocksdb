@@ -169,6 +169,7 @@ fn build_rocksdb() {
     }
 
     config.file("patches/rocksdb.cc");
+    config.file("utilities/compact_on_deletion_collector.cc");
     config.file("build_version.cc");
 
     config.cpp(true);

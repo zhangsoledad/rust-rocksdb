@@ -177,6 +177,43 @@ impl WriteBatch {
         }
     }
 
+    /// `single_delete` removes the database entry for a key, but has the prerequisites that the key exists and was not overwritten.
+    ///
+    /// Returns OK on success, and a non-OK status on error. It is not an error if key did not exist in the database.
+    /// If a key is overwritten (by calling `put` multiple times),
+    /// then the result of calling `single_delete` on this key is undefined. `single_delete` only behaves correctly
+    /// if there has been only one `put` for this key since the previous call to `single_delete` for this key.
+    pub fn single_delete<K: AsRef<[u8]>>(&mut self, key: K) -> Result<(), Error> {
+        let key = key.as_ref();
+
+        unsafe {
+            ffi::rocksdb_writebatch_singledelete(
+                self.handle(),
+                key.as_ptr() as *const c_char,
+                key.len() as size_t,
+            );
+            Ok(())
+        }
+    }
+
+    pub fn single_delete_cf<K: AsRef<[u8]>>(
+        &mut self,
+        cf: &ColumnFamily,
+        key: K,
+    ) -> Result<(), Error> {
+        let key = key.as_ref();
+
+        unsafe {
+            ffi::rocksdb_writebatch_singledelete_cf(
+                self.handle(),
+                cf.handle(),
+                key.as_ptr() as *const c_char,
+                key.len() as size_t,
+            );
+            Ok(())
+        }
+    }
+
     /// Remove database entries from start key to end key.
     ///
     /// Removes the database entries in the range ["begin_key", "end_key"), i.e.,

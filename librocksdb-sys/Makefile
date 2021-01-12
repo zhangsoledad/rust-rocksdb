@@ -12,6 +12,16 @@ gen_bindings:
 		--ctypes-prefix libc \
 		-o src/bindings.rs
 
+gen_compact_on_deletion_collector:
+	bindgen utilities/compact_on_deletion_collector.h \
+		--generate types,functions \
+		--size_t-is-usize \
+		--blacklist-type max_align_t \
+		--ctypes-prefix libc \
+		--blacklist-type rocksdb_options_t \
+		`sed -n '/^extern ROCKSDB_LIBRARY_API/ {n;p}' utilities/compact_on_deletion_collector.h | sed -n 's/^    .* \([a-z0-9_]*\)(.*$$/\1/p' | xargs -I {} echo -n " --whitelist-function {}"` \
+		-o src/compact_on_deletion_collector.rs -- -Irocksdb/include
+
 gen_patches:
 	bindgen patches/rocksdb.h \
 		--size_t-is-usize --blacklist-type max_align_t --ctypes-prefix libc \
