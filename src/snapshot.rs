@@ -88,3 +88,8 @@ impl IterateCF for Snapshot<'_> {
         self.db.get_raw_iter_cf(cf_handle, &ro)
     }
 }
+
+/// `Send` and `Sync` implementations for `Snapshot` are safe, because `Snapshot` is
+/// immutable and can be safely shared between threads.
+unsafe impl<'a> Send for Snapshot<'a> {}
+unsafe impl<'a> Sync for Snapshot<'a> {}

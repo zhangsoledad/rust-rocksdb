@@ -251,3 +251,5 @@ impl Handle<ffi::rocksdb_writebatch_t> for WriteBatch {
         self.inner
     }
 }
+
+unsafe impl Send for WriteBatch {}
