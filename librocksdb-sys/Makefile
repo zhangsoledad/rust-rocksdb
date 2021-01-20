@@ -5,6 +5,13 @@ rocksdb_lib_sources.txt: rocksdb/src.mk
 
 gen_lib_sources: rocksdb_lib_sources.txt
 
+gen_bindings:
+	bindgen rocksdb/include/rocksdb/c.h \
+		--size_t-is-usize \
+		--blacklist-type max_align_t \
+		--ctypes-prefix libc \
+		-o src/bindings.rs
+
 gen_patches:
 	bindgen patches/rocksdb.h \
 		--size_t-is-usize --blacklist-type max_align_t --ctypes-prefix libc \
