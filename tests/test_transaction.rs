@@ -265,7 +265,7 @@ pub fn test_transaction_merge() {
     {
         let mut opts = Options::default();
         opts.create_if_missing(true);
-        opts.set_merge_operator("test operator", concat_merge, None);
+        opts.set_merge_operator_associative("test operator", concat_merge);
         let db = TransactionDB::open(&opts, &path).unwrap();
         let trans1 = db.transaction_default();
 

@@ -262,7 +262,7 @@ pub fn test_optimistic_transaction_merge() {
     {
         let mut opts = Options::default();
         opts.create_if_missing(true);
-        opts.set_merge_operator("test operator", concat_merge, None);
+        opts.set_merge_operator_associative("test operator", concat_merge);
         let db = OptimisticTransactionDB::open(&opts, &path).unwrap();
         let trans = db.transaction_default();
 
