@@ -1875,6 +1875,19 @@ impl Options {
             ffi::rocksdb_options_set_recycle_log_file_num(self.inner, num);
         }
     }
+
+    /// Some functions that make it easier to optimize RocksDB
+    ///
+    /// Set appropriate parameters for bulk loading.
+    ///
+    /// All data will be in level 0 without any automatic compaction.
+    /// It's recommended to manually call CompactRange(NULL, NULL) before reading
+    /// from the database, because otherwise the read can be very slow.
+    pub fn set_prepare_for_bulk_load(&mut self) {
+        unsafe {
+            ffi::rocksdb_options_prepare_for_bulk_load(self.inner);
+        }
+    }
 }
 
 impl Default for Options {
