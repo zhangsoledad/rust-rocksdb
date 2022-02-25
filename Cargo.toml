@@ -32,5 +32,8 @@ libc = "0.2"
 librocksdb-sys = { package = "ckb-librocksdb-sys", path = "librocksdb-sys", version = "=6.28.2" }
 tempfile = "3"
 
+[target.'cfg(windows)'.dependencies]
+local-encoding = { git = "https://github.com/zhangsoledad/local-encoding-rs.git", branch = "as_ref_osstr" }
+
 [dev-dependencies]
 trybuild = "1.0"

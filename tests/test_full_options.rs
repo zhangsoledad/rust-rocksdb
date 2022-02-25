@@ -17,6 +17,23 @@ extern crate ckb_rocksdb as rocksdb;
 use crate::rocksdb::{prelude::*, FullOptions, TemporaryDBPath, DB};
 
 #[test]
+fn test_options_load_from_non_unicode() {
+    let _ = {
+        let config_file = "tests/resources/测试/OPTIONS-000001";
+        let opts_res = FullOptions::load_from_file(config_file, None, false);
+        assert!(opts_res.is_ok());
+        opts_res.unwrap()
+    };
+
+    let _ = {
+        let config_file = "tests/resources/español/OPTIONS-000001";
+        let opts_res = FullOptions::load_from_file(config_file, None, false);
+        assert!(opts_res.is_ok());
+        opts_res.unwrap()
+    };
+}
+
+#[test]
 fn test_options_load_from_file() {
     let full_opts = {
         let config_file = "tests/resources/OPTIONS-000001";

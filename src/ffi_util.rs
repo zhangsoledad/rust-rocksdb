@@ -37,6 +37,24 @@ pub fn opt_bytes_to_ptr<T: AsRef<[u8]>>(opt: Option<T>) -> *const c_char {
     }
 }
 
+#[cfg(windows)]
+pub fn to_cpath<P, E>(path: P, error_message: E) -> Result<CString, Error>
+where
+    P: AsRef<Path>,
+    E: AsRef<str>,
+{
+    use local_encoding::{Encoder, Encoding};
+
+    let encoded_path = Encoding::ANSI
+        .to_bytes(path.as_ref().as_os_str())
+        .map_err(|_| Error::new("Failed to encode path to CP_ACP codepage".to_string()))?;
+    match CString::new(encoded_path) {
+        Ok(c) => Ok(c),
+        Err(_) => Err(Error::new(error_message.as_ref().to_string())),
+    }
+}
+
+#[cfg(not(windows))]
 pub fn to_cpath<P, E>(path: P, error_message: E) -> Result<CString, Error>
 where
     P: AsRef<Path>,
