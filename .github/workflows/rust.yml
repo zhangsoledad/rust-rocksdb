@@ -108,3 +108,8 @@ jobs:
         with:
           command: test
           args: --features io-uring
+      - name: Run rocksdb tests (portable)
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features portable

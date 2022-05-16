@@ -5,7 +5,12 @@ use std::process::Command;
 
 fn get_flags_from_detect_platform_script() -> Option<Vec<String>> {
     if !cfg!(target_os = "windows") {
-        let output = Command::new("bash")
+        let mut cmd = Command::new("bash");
+        if cfg!(feature = "portable") {
+            cmd.env("PORTABLE", "1")
+        }
+
+        let output = cmd
             .arg("build_detect_platform")
             .output()
             .expect("failed to execute process");
@@ -141,7 +146,7 @@ fn build_rocksdb() {
         }
     } else {
         #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-        {
+        if !cfg!(feature = "portable") {
             if is_x86_feature_detected!("sse4.2") {
                 config.flag_if_supported("-msse4.2");
                 config.define("HAVE_SSE42", None);
