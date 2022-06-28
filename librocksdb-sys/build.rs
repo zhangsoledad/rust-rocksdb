@@ -6,14 +6,16 @@ use std::process::Command;
 fn get_flags_from_detect_platform_script() -> Option<Vec<String>> {
     if !cfg!(target_os = "windows") {
         let mut cmd = Command::new("bash");
+
+        // if ROCKSDB_USE_IO_URING is not set, treat as enable
+        // we use pkg_config probe library, more friendly for rust.
+        cmd.env("ROCKSDB_USE_IO_URING", "0");
+
         if cfg!(feature = "static") {
             cmd.env("LIB_MODE", "static");
         }
         if cfg!(feature = "portable") {
             cmd.env("PORTABLE", "1");
-        }
-        if cfg!(feature = "io-uring") {
-            cmd.env("ROCKSDB_USE_IO_URING", "1");
         }
 
         let output = cmd
@@ -261,8 +263,20 @@ fn build_rocksdb() {
         config.flag("-Wno-invalid-offsetof");
 
         if cfg!(feature = "jemalloc") {
-            config.define("ROCKSDB_JEMALLOC", None);
-            config.define("JEMALLOC_NO_DEMANGLE", None);
+            if let Err(e) = pkg_config::probe_library("jemalloc") {
+                panic!("pkg_config jemalloc {}", e);
+            } else {
+                config.define("ROCKSDB_JEMALLOC", None);
+                config.define("JEMALLOC_NO_DEMANGLE", None);
+            }
+        }
+
+        if cfg!(feature = "io-uring") {
+            if let Err(e) = pkg_config::probe_library("liburing") {
+                panic!("pkg_config liburing {}", e);
+            } else {
+                config.define("ROCKSDB_IOURING_PRESENT", None);
+            }
         }
     }
 

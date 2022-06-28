@@ -27,6 +27,7 @@ bzip2 = []
 
 [dependencies]
 libc = "0.2"
+pkg-config = "0.3.25"
 
 [dev-dependencies]
 const-cstr = "0.3"
