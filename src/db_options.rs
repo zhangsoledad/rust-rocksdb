@@ -3094,7 +3094,7 @@ impl WriteOptions {
         }
 
         let wo_handle = input
-            .or_else(|| default_writeopts.as_ref())
+            .or(default_writeopts.as_ref())
             .ok_or_else(|| Error::new("Unable to extract write options.".to_string()))?
             .handle();
 
@@ -3237,7 +3237,7 @@ impl ReadOptions {
         }
 
         let ro_handle = input
-            .or_else(|| default_readopts.as_ref())
+            .or(default_readopts.as_ref())
             .ok_or_else(|| Error::new("Unable to extract read options.".to_string()))?
             .handle();
 
@@ -3357,7 +3357,7 @@ impl IngestExternalFileOptions {
         }
 
         let handle = input
-            .or_else(|| default_opts.as_ref())
+            .or(default_opts.as_ref())
             .ok_or_else(|| {
                 Error::new("Unable to extract ingest external file options.".to_string())
             })?

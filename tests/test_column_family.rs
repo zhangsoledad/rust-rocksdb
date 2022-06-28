@@ -49,7 +49,7 @@ fn test_column_family() {
                 e.to_string()
                     .starts_with("Invalid argument: Column families not opened: cf1"),
                 "error msg {}",
-                e.to_string()
+                e
             ),
         }
     }
